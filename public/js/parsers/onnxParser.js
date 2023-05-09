@@ -17,7 +17,7 @@ async function parseONNXModelFromFile(file) {
                 const rawModel = root.lookupType("onnx.ModelProto").decode(modelData);
                 console.log(rawModel);
 
-                const nodes = rawModel.graph.node.map((node) => {
+                const mainNodes = rawModel.graph.node.map((node) => {
                     const id = node.name || `${node.input[0]}_${node.output[0]}`;
                     const type = node.opType;
                     const name = node.name;
@@ -29,14 +29,40 @@ async function parseONNXModelFromFile(file) {
                         return acc;
                     }, {});
 
-                    //not used yet
-                    const input = rawModel.graph.input.find((input) => input.name === node.input[0]);
-                    const output = rawModel.graph.output.find((output) => output.name === node.output[0]);
-                    const inputShape = input ? input.type.tensorType.shape.dim.map(dim => dim.dimValue) : null;
-                    const outputShape = output ? output.type.tensorType.shape.dim.map(dim => dim.dimValue) : null;
+                    return new Node(id, type, name, inputs, outputs, attributes);
+                });
+                const inputNodes = rawModel.graph.input.map((node) => {
+                    const id = node.name;
+                    const type = 'Input';
+                    const name = node.name;
+                    const inputs = [];
+                    const outputs = mainNodes.filter(mainNode => mainNode.inputs.includes(node.name)).map(mainNode => mainNode.id);
+
+                    //content is a HUGE tensor usually
+                    const content = rawModel.graph.initializer.find(elem => elem.name === node.name)?.rawData;
+                    const attributes = {
+                        elemType: node.type.tensorType.elemType,
+                        shape: node.type.tensorType.shape.dim.map(dim => dim.dimValue),
+                        //content
+                    };
 
                     return new Node(id, type, name, inputs, outputs, attributes);
                 });
+                const outputNodes = rawModel.graph.output.map((node) => {
+                    const id = node.name;
+                    const type = 'Output';
+                    const name = node.name;
+                    const inputs = mainNodes.filter(mainNode => mainNode.outputs.includes(node.name)).map(mainNode => mainNode.id);
+                    const outputs = [];
+
+                    const attributes = {
+                        elemType: node.type.tensorType.elemType,
+                        shape: node.type.tensorType.shape.dim.map(dim => dim.dimValue)
+                    };
+
+                    return new Node(id, type, name, inputs, outputs, attributes);
+                });
+                const nodes = [...mainNodes, ...inputNodes, ...outputNodes];
 
                 const nodeMap = new Map();
                 nodes.forEach((node) => {
@@ -47,16 +73,20 @@ async function parseONNXModelFromFile(file) {
                       nodeMap.get(input).push(node);
                     });
                 });
+
                 const connections = [];
                 nodes.forEach((node) => {
                     node.outputs.forEach((output) => {
+                        let outputNodes;
                         if (nodeMap.has(output)) {
-                            const outputNodes = nodeMap.get(output);
-                            outputNodes.forEach((outputNode) => {
-                                const connection = new Connection(`${node.id}_${outputNode.id}`, node, outputNode);
-                                connections.push(connection);
-                            });
+                            outputNodes = nodeMap.get(output);
+                        } else {
+                            outputNodes = nodes.filter(node => node.id === output);
                         }
+                        outputNodes.forEach((outputNode) => {
+                            const connection = new Connection(`${node.id}_${outputNode.id}`, node, outputNode);
+                            connections.push(connection);
+                        });
                     });
                 });
 
