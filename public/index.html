@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSculpt - Neural Network Model Editor</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/model.css">
+  </head>
+  <body>
+    <header>
+      <div class="leftwrap">
+        <h1>NetSculpt</h1>
+     </div>
+     <div class="rightwrap">
+      <ul class="menu">
+         <div class="menu-item">
+          File
+          <div class="dropdown">
+            <label for="open-file-input" class="dropdown-item">Open...</label>
+            <input type="file" id="open-file-input" style="display: none;">
+            <a href="#" class="dropdown-item">Export...</a>
+          </div>
+         </div>
+         <a href="#" class="menu-item">Edit</a>
+         <div class="menu-item">
+          Help
+          <div class="dropdown">
+            <a href="#" class="dropdown-item">About</a>
+            <a href="#" class="dropdown-item">Contact</a>
+            <div id="server-info">
+              <p>Port: <span id="server-port"></span></p>
+              <p>OS: <span id="os-info"></span></p>
+              <p>App ID: <span id="app-id"></span></p>
+              <p>Server Version: <span id="server-version"></span></p>
+              <p>Client Version: <span id="client-version"></span></p>
+            </div>
+          </div>
+         </div>
+      </ul>
+   </div>
+    </header>
+
+    <main>
+      <section id="model-editor">
+        <div id="editor-container">
+          
+        </div>
+      </section>
+    </main>
+    
+    <footer>
+    </footer>
+
+    <script src="js/neutralino.js"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/protobufjs@7.X.X/dist/protobuf.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/onnxjs/dist/onnx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+
+    <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
+
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/parsers/onnxParser.js"></script>
+    <script type="module" src="js/parsers/tensorflowParser.js"></script>
+    <script type="module" src="js/render.js"></script>
+
+    <script src="js/utils.js"></script>
+  </body>
+</html>
