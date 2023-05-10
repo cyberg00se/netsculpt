@@ -39,3 +39,9 @@ To configure the Neutralino project, follow these steps:
 1. Set the environment variable `NL_MODE` or `defaultMode` variable in [config file](neutralino.config.js) to `window` or `browser`.
 
 2. Set any other configuration options as required.
+
+## Sample model files
+
+* **ONNX**: [squeezenet](https://media.githubusercontent.com/media/onnx/models/main/vision/classification/squeezenet/model/squeezenet1.0-3.onnx)
+* **TensorFlow**: [chessbot](https://raw.githubusercontent.com/srom/chessbot/master/model/chessbot.pb)
+
