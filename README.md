@@ -36,7 +36,7 @@ neu run
 
 To configure the Neutralino project, follow these steps:
 
-1. Set the environment variable `NL_MODE` or `defaultMode` variable in [config file](neutralino.config.js) to `window` or `browser`.
+1. Set the environment variable `NL_MODE` or `defaultMode` variable in [config file](neutralino.config.json) to `window` or `browser`.
 
 2. Set any other configuration options as required.
 
