@@ -189,7 +189,7 @@ document.getElementById("delete-node-btn").addEventListener("click", function(ev
     });
 
     btn.addEventListener("click", function() {
-        const id = this.idSelect.value;
+        const id = idSelect.value;
         
         currentModel.removeNode(id);
                 
