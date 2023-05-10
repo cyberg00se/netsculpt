@@ -1,6 +1,5 @@
-import * as onnxParser from './parsers/onnxParser.js';
-import * as tensorflowParser from './parsers/tensorflowParser.js';
 import * as render from './render.js';
+import * as parser from './parsers/parser.js';
 
 function showInfo() {
     document.getElementById('server-port').textContent = NL_PORT;
@@ -53,26 +52,29 @@ if(NL_OS != "Darwin") {
 
 showInfo();
 
-document.getElementById("open-file-input").addEventListener("change", function(event) {
-    var file = event.target.files[0];
+let currentModel;
 
-    if (file.type === "application/onnx" || file.name.endsWith(".onnx")) {
-        onnxParser.parseONNXModelFromFile(file)
-            .then(result => {
-                render.renderNeuralNetworkModel(result);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    } else if (file.type === "application/tf" || file.name.endsWith(".pb")) {
-        tensorflowParser.parseTensorFlowModelFromFile(file)
-            .then(result => {
-                render.renderNeuralNetworkModel(result);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    } else {
-        console.error("Unsupported file type: " + file.type);
-    }
+document.getElementById("open-file-input").addEventListener("change", function(event) {
+    const file = event.target.files[0];
+
+    parser.parseModelFromFile(file)
+        .then(result => {
+            currentModel = result;
+            render.renderNeuralNetworkModel(currentModel);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+});
+
+document.getElementById("add-node-btn").addEventListener("click", function(event) {
+    
+});
+
+document.getElementById("delete-node-btn").addEventListener("click", function(event) {
+    
+});
+
+document.getElementById("edit-node-btn").addEventListener("click", function(event) {
+    
 });

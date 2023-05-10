@@ -22,7 +22,17 @@
             <a href="#" class="dropdown-item">Export...</a>
           </div>
          </div>
-         <a href="#" class="menu-item">Edit</a>
+         <div class="menu-item">
+          Edit
+          <div class="dropdown">
+            <label for="add-node-btn" class="dropdown-item">Add node</label>
+            <button id="add-node-btn" style="display: none;"></button>
+            <label for="delete-node-btn" class="dropdown-item">Delete node</label>
+            <button id="delete-node-btn" style="display: none;"></button>
+            <label for="edit-node-btn" class="dropdown-item">Edit node</label>
+            <button id="edit-node-btn" style="display: none;"></button>
+          </div>
+         </div>
          <div class="menu-item">
           Help
           <div class="dropdown">
@@ -61,6 +71,7 @@
     <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
 
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/parsers/parser.js"></script>
     <script type="module" src="js/parsers/onnxParser.js"></script>
     <script type="module" src="js/parsers/tensorflowParser.js"></script>
     <script type="module" src="js/render.js"></script>
