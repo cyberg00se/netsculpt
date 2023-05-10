@@ -56,3 +56,23 @@ export class Node {
         this.attributes = attributes;
     }
 }
+
+export const onnxNodeTypes = [
+    'Input',
+    'Output',
+    'Conv',
+    'Relu',
+    'MaxPool',
+    'Concat',
+    'Dropout',
+    'GlobalAveragePool',
+    'Softmax'
+];
+export const tensorflowNodeTypes = [
+    'Placeholder', 
+    'Identity',
+    'Const',
+    'BiasAdd',
+    'MatMul',
+    'Elu'
+];

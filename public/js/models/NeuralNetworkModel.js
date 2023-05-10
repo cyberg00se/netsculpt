@@ -15,12 +15,12 @@ export class NeuralNetworkModel {
 
     addNode(node) {
         this.nodes.push(node);
-        node.inputs.foreEach((inputId) => {
+        node.inputs.forEach((inputId) => {
             const inputNode = this.getNodeById(inputId);
             const newConnection = new Connection(`${inputNode.id}_${node.id}`, inputNode, node);
             this.addConnection(newConnection);
         });
-        node.outputs.foreEach((outputId) => {
+        node.outputs.forEach((outputId) => {
             const outputNode = this.getNodeById(outputId);
             const newConnection = new Connection(`${node.id}_${outputNode.id}`, node, outputNode);
             this.addConnection(newConnection);
