@@ -1,3 +1,5 @@
+import { Connection } from "./Connection.js";
+
 export const ModelType = {
     ONNX: "ONNX",
     TENSORFLOW: "TensorFlow"
@@ -13,6 +15,16 @@ export class NeuralNetworkModel {
 
     addNode(node) {
         this.nodes.push(node);
+        node.inputs.foreEach((inputId) => {
+            const inputNode = this.getNodeById(inputId);
+            const newConnection = new Connection(`${inputNode.id}_${node.id}`, inputNode, node);
+            this.addConnection(newConnection);
+        });
+        node.outputs.foreEach((outputId) => {
+            const outputNode = this.getNodeById(outputId);
+            const newConnection = new Connection(`${node.id}_${outputNode.id}`, node, outputNode);
+            this.addConnection(newConnection);
+        });
     }
     
     removeNode(nodeId) {
@@ -30,7 +42,10 @@ export class NeuralNetworkModel {
     }
     
     addConnection(connection) {
-        this.connections.push(connection);
+        const existingConnection = this.connections.find(c => c.isEqual(connection));
+        if (!existingConnection) {
+            this.connections.push(connection);
+        }
     }
     
     removeConnection(connectionId) {
@@ -54,6 +69,10 @@ export class NeuralNetworkModel {
 
     getNodes() {
         return this.nodes;
+    }
+
+    getNodesIds() {
+        return this.nodes.map(node => { return node.id });
     }
     
     getConnections() {
