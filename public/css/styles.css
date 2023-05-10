@@ -156,7 +156,7 @@ footer {
   
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 8% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
@@ -175,4 +175,28 @@ footer {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+select {
+    padding: 5px;
+    border: 1px solid wheat;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    color: #444;
+    background-color: #fff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+select:focus {
+    outline: none;
+    border-color: #555;
+}
+option {
+    color: #444;
+    background-color: #fff;
+}
+option:hover {
+    background-color: #f2f1f0;
 }

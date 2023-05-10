@@ -72,15 +72,11 @@
             </select>
             <br>
             <label for="add-node-node-input">Node Input:</label>
-            <select id="add-node-node-input">
-                <option disabled selected value>Choose a node input id...</option>
-                <!--${possibleInputs.map(id => `<option value="${id}">${id}</option>`).join("")}-->
+            <select id="add-node-node-input" multiple>
             </select>
             <br>
             <label for="add-node-node-output">Node Output:</label>
-            <select id="add-node-node-output">
-                <option disabled selected value>Choose a node output id...</option>
-                <!--${possibleOutputs.map(id => `<option value="${id}">${id}</option>`).join("")}-->
+            <select id="add-node-node-output" multiple>
             </select>
             <br>
             <button id="add-node" type="button">Add</button>
@@ -95,7 +91,6 @@
           <form>
             <select id="delete-node-node-id">
               <option disabled selected value>Choose a node id...</option>
-              <!--${nodeIds.map(id => `<option value="${id}">${id}</option>`).join("")}-->
             </select>
             <br>
             <button id="delete-node" type="button">Delete</button>

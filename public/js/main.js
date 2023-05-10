@@ -123,11 +123,11 @@ document.getElementById("add-node-btn").addEventListener("click", function(event
             const child = typeSelect.childNodes[i];
             typeSelect.removeChild(child);
         }
-        for (let i = inputSelect.childNodes.length - 1; i > 1; i--) {
+        for (let i = inputSelect.childNodes.length - 1; i > 0; i--) {
             const child = inputSelect.childNodes[i];
             inputSelect.removeChild(child);
         }
-        for (let i = outputSelect.childNodes.length - 1; i > 1; i--) {
+        for (let i = outputSelect.childNodes.length - 1; i > 0; i--) {
             const child = outputSelect.childNodes[i];
             outputSelect.removeChild(child);
         }
@@ -137,9 +137,13 @@ document.getElementById("add-node-btn").addEventListener("click", function(event
         const nodeName = document.getElementById("add-node-node-name").value;
         const nodeType = typeSelect.value;
         const inputs = [];
-        inputs.push(inputSelect.value);
+        for (const option of inputSelect.selectedOptions) {
+            inputs.push(option.value);
+        }
         const outputs = [];
-        outputs.push(outputSelect.value);
+        for (const option of outputSelect.selectedOptions) {
+            outputs.push(option.value);
+        }
         const attributes = [];
         
         const newNode = new Node(
