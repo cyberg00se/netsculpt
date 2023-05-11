@@ -153,13 +153,33 @@ footer {
     overflow: auto;
     background-color: rgba(0,0,0,0.4);
 }
-  
+
 .modal-content {
     background-color: #fefefe;
     margin: 8% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+}
+
+.modal-button {
+    background-color: rgb(255, 197, 91);
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+  
+.modal-button:hover {
+    background-color: #ff8c00;
+    color: #fff;
+}
+
+.modal-content > h2 {
+    margin-bottom: 10px;
 }
 
 /* Close button */
@@ -186,8 +206,6 @@ select {
     color: #444;
     background-color: #fff;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
 }
 select:focus {
     outline: none;
@@ -199,4 +217,9 @@ option {
 }
 option:hover {
     background-color: #f2f1f0;
+}
+
+form > select, form > input {
+    display: flex;
+    flex-direction: column;
 }

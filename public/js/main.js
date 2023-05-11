@@ -205,5 +205,42 @@ document.getElementById("delete-node-btn").addEventListener("click", function(ev
 });
 
 document.getElementById("edit-node-btn").addEventListener("click", function(event) {
-    
+    if (!currentModel) {
+        return;
+    }
+
+    const possibleIds = currentModel.getNodesIds();
+
+    var modal = document.getElementById("edit-node-modal");
+    var btn = document.getElementById("edit-node");
+    var close = document.getElementById("edit-node-close");
+
+    var idSelect = document.getElementById("edit-node-node-id");
+
+    for(const id of possibleIds){
+        var option = document.createElement("option");
+        option.text = id;
+        option.value = id;
+        idSelect.append(option);
+    }
+
+    modal.style.display = "block";
+    close.addEventListener("click", function() {
+        modal.style.display = "none";
+        for (let i = idSelect.childNodes.length - 1; i > 1; i--) {
+            const child = idSelect.childNodes[i];
+            idSelect.removeChild(child);
+        }
+    });
+
+    btn.addEventListener("click", function() {
+        const id = idSelect.value;
+        
+        console.log(`Stub for edit node ${id}`);
+                
+        close.click();
+
+        console.log(currentModel);
+        render.renderNeuralNetworkModel(currentModel);
+    });
 });

@@ -65,21 +65,17 @@
           <form>
             <label for="add-node-node-name">Node Name:</label>
             <input type="text" id="add-node-node-name">
-            <br>
             <label for="add-node-node-type">Node Type:</label>
             <select id="add-node-node-type">
                 <option disabled selected value>Choose a node type...</option>
             </select>
-            <br>
             <label for="add-node-node-input">Node Input:</label>
             <select id="add-node-node-input" multiple>
             </select>
-            <br>
             <label for="add-node-node-output">Node Output:</label>
             <select id="add-node-node-output" multiple>
             </select>
-            <br>
-            <button id="add-node" type="button">Add</button>
+            <button id="add-node" type="button" class="modal-button">Add</button>
           </form>
         </div>
       </section>
@@ -92,14 +88,22 @@
             <select id="delete-node-node-id">
               <option disabled selected value>Choose a node id...</option>
             </select>
-            <br>
-            <button id="delete-node" type="button">Delete</button>
+            <button id="delete-node" type="button" class="modal-button">Delete</button>
           </form>
         </div>
       </section>
     
       <section id="edit-node-modal" class="modal">
-        
+        <div class="modal-content">
+          <span id="edit-node-close" class="close">&times;</span>
+          <h2>Edit Node</h2>
+          <form>
+            <select id="edit-node-node-id">
+              <option disabled selected value>Choose a node id...</option>
+            </select>
+            <button id="edit-node" type="button" class="modal-button">Edit</button>
+          </form>
+        </div>
       </section>
     </main>
     
@@ -120,6 +124,6 @@
     <script type="module" src="js/parsers/tensorflowParser.js"></script>
     <script type="module" src="js/render.js"></script>
 
-    <script src="js/utils.js"></script>
+    <script type="module" src="js/utils.js"></script>
   </body>
 </html>
