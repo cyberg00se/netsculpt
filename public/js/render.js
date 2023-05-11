@@ -1,101 +1,45 @@
-function testRenderNeuralNetworkModel(model) {
-    console.log(model);
-    try {
-        const canvas = document.getElementById('editor-container');
-        while (canvas.lastChild) {
-            canvas.removeChild(canvas.lastChild);
-        }
-        if (!model) {
-            return Promise.resolve();
-        }
-
-        model.nodes.forEach(node => {
-            var newNode = document.createElement("div");
-            newNode.className = "node"; 
-            newNode.id = node.id;
-          
-            var nodeTexts = [
-                { label: "ID", value: node.getId() },
-                { label: "Name", value: node.getName() },
-                { label: "Type", value: node.getType() },
-                //{ label: "Inputs", value: node.getInputs() },
-                //{ label: "Outputs", value: node.getOutputs() },
-                { label: "Attributes", value: node.getAttributes() },
-            ];
-          
-            nodeTexts.forEach(nodeText => {
-                var textElement = document.createElement("div");
-                textElement.className = "node-text"; 
-                textElement.textContent = `${nodeText.label}: ${nodeText.value}`;
-                newNode.appendChild(textElement);
-            });
-          
-            canvas.appendChild(newNode);
-        });
-        model.connections.forEach(connection => {
-            var textElement = document.createElement("div"); 
-            textElement.textContent = `ID:${connection.id} From:${connection.getFromNode().getId()} To:${connection.getToNode().getId()}`;
-            canvas.appendChild(textElement);
-        });
-        return;
-    } catch (error) {
-        return Promise.reject(error);
-    }
-}
-
-function renderNeuralNetworkModelGoJS(model) {
+function renderNeuralNetworkModelD3(model) {
     console.log(model);
 
     const canvas = document.getElementById('editor-container');
-    if (canvas.hasChildNodes()) {
-        const diagram = go.Diagram.fromDiv(canvas);
-        if (typeof diagram !== 'undefined' && diagram !== null) {
-            diagram.div = null;
-        }
+    while (canvas.lastChild) {
+        canvas.removeChild(canvas.lastChild);
     }
     if (!model) {
         return Promise.resolve();
     }
 
     try {
-        var diagram = new go.Diagram("editor-container",
-            { 
-                "undoManager.isEnabled": true,
-                layout: new go.LayeredDigraphLayout({ 
-                    columnSpacing: 30, 
-                    layerSpacing: 35,
-                    direction: 90
-                })
+        var graph = new dagreD3.graphlib.Graph({compound:true}).setGraph({});
+
+        for(const nodeModel of model.nodes) { 
+            const label = `${nodeModel.getId()}\n${nodeModel.getType()}\n${JSON.stringify(nodeModel.getAttributes())}`;
+            graph.setNode(nodeModel.getId(), { 
+                label,  
+                rx: 5,
+                ry: 5,
+                padding: 10,
+                class: 'node'
             });
+        };
+        for(const linkModel of model.connections) { 
+            graph.setEdge(linkModel.source, linkModel.target, {
+                class: 'edgePath',
+                curve: d3.curveCardinal.tension(1),
+                arrowhead: 'undirected',
+            });
+        };
 
-        diagram.nodeTemplate =
-            new go.Node("Horizontal",
-                { background: "wheat" })
-                .add(new go.TextBlock(
-                    "empty_id",
-                    { margin: 12, stroke: "darkorange", font: "bold 16px sans-serif" })
-                    .bind("text", "text"));
+        const svg = d3.select('#editor-container');
+        const inner = svg.append('g');
+        
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });;
+        svg.call(zoom);
 
-        diagram.linkTemplate =
-            new go.Link(
-                { routing: go.Link.Orthogonal, corner: 5 })
-                .add(new go.Shape({ strokeWidth: 3, stroke: "darkorange" }));
-
-        const displayNodes = model.nodes.map(nodeModel => { 
-            return { 
-                key: nodeModel.getId(),
-                text: `${nodeModel.getId()}\n${nodeModel.getType()}\n${JSON.stringify(nodeModel.getAttributes())}`,
-                type: nodeModel.getType(),
-                attr: nodeModel.getAttributes()
-            } 
-        });
-        const displayLinks = model.connections.map(linkModel => { 
-            return { 
-                from: linkModel.source,
-                to: linkModel.target
-            } 
-        });
-        diagram.model = new go.GraphLinksModel(displayNodes, displayLinks);
+        var render = new dagreD3.render();
+        render(inner, graph);
 
         return;
     } catch (error) {
@@ -103,6 +47,6 @@ function renderNeuralNetworkModelGoJS(model) {
     }
 }
 
-const renderNeuralNetworkModel = renderNeuralNetworkModelGoJS;
+const renderNeuralNetworkModel = renderNeuralNetworkModelD3;
 
 export { renderNeuralNetworkModel };
