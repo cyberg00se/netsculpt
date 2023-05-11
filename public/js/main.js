@@ -1,7 +1,6 @@
 import * as render from './render.js';
-import * as parser from './parsers/parser.js';
 import * as uiUtils from './utils/uiUtils.js';
-import { Node } from "./models/Node.js";
+import store from './store.js';
 
 Neutralino.init();
 
@@ -14,22 +13,19 @@ if(NL_OS != "Darwin") {
 
 uiUtils.showInfo();
 
-let currentModel;
-
 document.getElementById("open-file-input").addEventListener("change", function(event) {
-    const file = event.target.files[0];
-
-    parser.parseModelFromFile(file)
-        .then(result => {
-            currentModel = result;
-            render.renderNeuralNetworkModel(currentModel);
+    try {
+        const file = event.target.files[0];
+        store.dispatch('loadModelFromFile', file).then(model => {
+            render.renderNeuralNetworkModel(model);
         })
-        .catch(error => {
-            console.error(error);
-        });
+    } catch(error) {
+        console.error(error);
+    }
 });
 
 document.getElementById("add-node-btn").addEventListener("click", function(event) {
+    const currentModel = store.getters.getModel;
     if (!currentModel) {
         return;
     }
@@ -71,25 +67,24 @@ document.getElementById("add-node-btn").addEventListener("click", function(event
             outputs.push(option.value);
         }
         const attributes = [];
-        
-        const newNode = new Node(
-            nodeName, 
+
+        store.commit('addNode', {
+            nodeId: nodeName, 
             nodeType, 
             nodeName, 
-            inputs.filter(x => x !== ""), 
-            outputs.filter(x => x !== ""), 
+            inputs, 
+            outputs, 
             attributes
-        );
-        currentModel.addNode(newNode);
+        });
                 
         close.click();
 
-        console.log(currentModel);
-        render.renderNeuralNetworkModel(currentModel);
+        render.renderNeuralNetworkModel(store.getters.getModel);
     });
 });
 
 document.getElementById("delete-node-btn").addEventListener("click", function(event) {
+    const currentModel = store.getters.getModel;
     if (!currentModel) {
         return;
     }
@@ -113,17 +108,15 @@ document.getElementById("delete-node-btn").addEventListener("click", function(ev
 
     btn.addEventListener("click", function() {
         const id = idSelect.value;
-        
-        currentModel.removeNode(id);
+        store.commit('deleteNode', id);
                 
         close.click();
-
-        console.log(currentModel);
-        render.renderNeuralNetworkModel(currentModel);
+        render.renderNeuralNetworkModel(store.getters.getModel);
     });
 });
 
 document.getElementById("edit-node-btn").addEventListener("click", function(event) {
+    const currentModel = store.getters.getModel;
     if (!currentModel) {
         return;
     }
@@ -139,7 +132,7 @@ document.getElementById("edit-node-btn").addEventListener("click", function(even
     uiUtils.appendOptions(possibleIds, idSelect);
 
     modal.style.display = "block";
-    
+
     close.addEventListener("click", function() {
         modal.style.display = "none";
         uiUtils.removeOptions(idSelect);
@@ -152,7 +145,6 @@ document.getElementById("edit-node-btn").addEventListener("click", function(even
                 
         close.click();
 
-        console.log(currentModel);
-        render.renderNeuralNetworkModel(currentModel);
+        render.renderNeuralNetworkModel(store.getters.getModel);
     });
 });
