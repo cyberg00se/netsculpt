@@ -38,4 +38,21 @@ function onWindowClose() {
     Neutralino.app.exit();
 }
 
-export { showInfo, setTray, onTrayMenuItemClicked, onWindowClose };
+function appendOptions(values, element) {
+    values.forEach(item => {
+      const option = document.createElement("option");
+      option.text = item;
+      option.value = item;
+      element.append(option);
+    });
+}
+
+function removeOptions(element) {
+    const lastIndex = element.multiple ? 0 : 1;
+    for (let i = element.childNodes.length - 1; i > lastIndex; i--) {
+        const child = element.childNodes[i];
+        element.removeChild(child);
+    }
+}
+
+export { showInfo, setTray, onTrayMenuItemClicked, onWindowClose, appendOptions, removeOptions };

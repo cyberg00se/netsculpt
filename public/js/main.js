@@ -1,8 +1,7 @@
 import * as render from './render.js';
 import * as parser from './parsers/parser.js';
 import * as uiUtils from './utils/uiUtils.js';
-import { Node, onnxNodeTypes, tensorflowNodeTypes } from "./models/Node.js";
-import { ModelType } from './models/NeuralNetworkModel.js';
+import { Node } from "./models/Node.js";
 
 Neutralino.init();
 
@@ -37,18 +36,7 @@ document.getElementById("add-node-btn").addEventListener("click", function(event
 
     const possibleInputs = currentModel.getNodesIds();
     const possibleOutputs = currentModel.getNodesIds();
-    let possibleTypes = [];
-    switch (currentModel.type) {
-        case ModelType.ONNX:
-          possibleTypes = onnxNodeTypes;
-          break;
-        case ModelType.TENSORFLOW:
-          possibleTypes = tensorflowNodeTypes;
-          break;
-        default:
-          possibleTypes = [];
-          break;
-      }
+    const possibleTypes = currentModel.getNodeTypes();
 
     var modal = document.getElementById("add-node-modal");
     var btn = document.getElementById("add-node");
@@ -57,41 +45,18 @@ document.getElementById("add-node-btn").addEventListener("click", function(event
     var typeSelect = document.getElementById("add-node-node-type");
     var inputSelect = document.getElementById("add-node-node-input");
     var outputSelect = document.getElementById("add-node-node-output");
-
-    for(const type of possibleTypes){
-        var option = document.createElement("option");
-        option.text = type;
-        option.value = type;
-        typeSelect.append(option);
-    }
-    for(const input of possibleInputs){
-        var option = document.createElement("option");
-        option.text = input;
-        option.value = input;
-        inputSelect.append(option);
-    }
-    for(const output of possibleOutputs){
-        var option = document.createElement("option");
-        option.text = output;
-        option.value = output;
-        outputSelect.append(option);
-    }
+    
+    uiUtils.appendOptions(possibleTypes, typeSelect);
+    uiUtils.appendOptions(possibleInputs, inputSelect);
+    uiUtils.appendOptions(possibleOutputs, outputSelect);
 
     modal.style.display = "block";
+
     close.addEventListener("click", function() {
         modal.style.display = "none";
-        for (let i = typeSelect.childNodes.length - 1; i > 1; i--) {
-            const child = typeSelect.childNodes[i];
-            typeSelect.removeChild(child);
-        }
-        for (let i = inputSelect.childNodes.length - 1; i > 0; i--) {
-            const child = inputSelect.childNodes[i];
-            inputSelect.removeChild(child);
-        }
-        for (let i = outputSelect.childNodes.length - 1; i > 0; i--) {
-            const child = outputSelect.childNodes[i];
-            outputSelect.removeChild(child);
-        }
+        uiUtils.removeOptions(typeSelect);
+        uiUtils.removeOptions(inputSelect);
+        uiUtils.removeOptions(outputSelect);
     });
 
     btn.addEventListener("click", function() {
@@ -137,20 +102,13 @@ document.getElementById("delete-node-btn").addEventListener("click", function(ev
 
     var idSelect = document.getElementById("delete-node-node-id");
 
-    for(const id of possibleIds){
-        var option = document.createElement("option");
-        option.text = id;
-        option.value = id;
-        idSelect.append(option);
-    }
+    uiUtils.appendOptions(possibleIds, idSelect);
 
     modal.style.display = "block";
+
     close.addEventListener("click", function() {
         modal.style.display = "none";
-        for (let i = idSelect.childNodes.length - 1; i > 1; i--) {
-            const child = idSelect.childNodes[i];
-            idSelect.removeChild(child);
-        }
+        uiUtils.removeOptions(idSelect);
     });
 
     btn.addEventListener("click", function() {
@@ -178,20 +136,13 @@ document.getElementById("edit-node-btn").addEventListener("click", function(even
 
     var idSelect = document.getElementById("edit-node-node-id");
 
-    for(const id of possibleIds){
-        var option = document.createElement("option");
-        option.text = id;
-        option.value = id;
-        idSelect.append(option);
-    }
+    uiUtils.appendOptions(possibleIds, idSelect);
 
     modal.style.display = "block";
+    
     close.addEventListener("click", function() {
         modal.style.display = "none";
-        for (let i = idSelect.childNodes.length - 1; i > 1; i--) {
-            const child = idSelect.childNodes[i];
-            idSelect.removeChild(child);
-        }
+        uiUtils.removeOptions(idSelect);
     });
 
     btn.addEventListener("click", function() {

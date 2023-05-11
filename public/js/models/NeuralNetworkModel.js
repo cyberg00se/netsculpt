@@ -5,6 +5,26 @@ export const ModelType = {
     TENSORFLOW: "TensorFlow"
 };
 
+export const onnxNodeTypes = [
+    'Input',
+    'Output',
+    'Conv',
+    'Relu',
+    'MaxPool',
+    'Concat',
+    'Dropout',
+    'GlobalAveragePool',
+    'Softmax'
+];
+export const tensorflowNodeTypes = [
+    'Placeholder', 
+    'Identity',
+    'Const',
+    'BiasAdd',
+    'MatMul',
+    'Elu'
+];
+
 export class NeuralNetworkModel {
     constructor(nodes, connections, type, raw) {
       this.nodes = nodes;
@@ -56,6 +76,17 @@ export class NeuralNetworkModel {
         const connection = this.connections.find(connection => connection.id === connectionId);
         if (connection) {
             connection.updateConnectionProperties(properties);
+        }
+    }
+
+    getNodeTypes() {
+        switch (this.type) {
+            case ModelType.ONNX:
+              return onnxNodeTypes;
+            case ModelType.TENSORFLOW:
+              return tensorflowNodeTypes;
+            default:
+              return [];
         }
     }
 
