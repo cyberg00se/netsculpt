@@ -1,7 +1,7 @@
 import { Node } from "../models/Node.js";
 import { Connection } from "../models/Connection.js"; 
 import { NeuralNetworkModel, ModelType } from "../models/NeuralNetworkModel.js";
-import { loadProtoDefinition, getFirstNonEmptyProperty } from '../utils.js';
+import { loadProtoDefinition, getFirstNonEmptyProperty } from '../utils/utils.js';
 
 async function parseONNXModelFromFile(file) {
     return new Promise((resolve, reject) => {
