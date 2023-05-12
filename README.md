@@ -6,8 +6,6 @@ NetSculpt app.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Icon credits
-
 ## Setup
 
 To set up the NetSculpt project, follow these steps:

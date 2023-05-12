@@ -12,7 +12,7 @@ function setTray() {
         return;
     }
     let tray = {
-        icon: "/resources/icons/trayIcon.png",
+        icon: "../../assets/images/trayIcon.png",
         menuItems: [
             {id: "VERSION", text: "Get version"},
             {id: "SEP", text: "-"},
