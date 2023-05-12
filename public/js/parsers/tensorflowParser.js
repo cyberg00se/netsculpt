@@ -75,7 +75,7 @@ function parseTensorflowAttributeValue(key, value) {
       return value.dim.map(dim => dim.size);
     case 'tensor':
       return {
-        dtype: value.dtype,
+        dtype: TensorflowDataType[value.dtype],
         shape: value.tensorShape.dim.map(dim => dim.size),
         //tensorContent is HUGE
         content: value.tensorContent.length > 0 ? '...' : []
