@@ -1,4 +1,5 @@
 import * as utils from './utils.js';
+import * as controller from '../controllers/controller.js'
 
 export function showInfo() {
     document.getElementById('server-port').textContent = NL_PORT;
@@ -101,7 +102,6 @@ export function createSelectForArrayAttribute(attrValue) {
     if (Array.isArray(attrValue)) {
         appendOptions(attrValue, select);
     } else {
-        //only single selected value, need to get full list
         appendOptions([attrValue], select);
     }
     return select;
@@ -176,3 +176,71 @@ export function gatherInputs(container) {
     }
     return inputs;
 }
+
+export function showModal(modalId, selectsMap) {
+    for (const [selectId, possibleValues] of selectsMap) {
+        const selectElement = document.getElementById(selectId);
+        appendOptions(possibleValues, selectElement);
+    }
+
+    const modal = document.getElementById(modalId);
+    modal.style.display = "block";
+}
+  
+export function hideModal(modalId, selects = [], inputs = [], containers = []) {
+    for (const selectId of selects) {
+        const selectElement = document.getElementById(selectId);
+        removeOptions(selectElement);
+    }
+    for (const inputId of inputs) {
+        const inputElement = document.getElementById(inputId);
+        inputElement.value = "";
+    }
+    for (const containerId of containers) {
+        const containerElement = document.getElementById(containerId);
+        containerElement.innerHTML = "";
+    }
+    const modal = document.getElementById(modalId);
+    modal.style.display = "none";
+}
+
+export function setupModal(modalId, closeId, selectMap = [], inputs = [], containers = []) {
+    const close = document.getElementById(closeId);
+  
+    showModal(modalId, selectMap);
+  
+    close.addEventListener("click", function() {
+        hideModal(modalId, Array.from(selectMap.keys()), inputs, containers);
+    });
+}
+
+export function setupTypeChangeHandler(responseEvent, typeSelectId, attributesContainerId, nodeIdInputId = undefined) {
+    const idInput = nodeIdInputId ? document.getElementById(nodeIdInputId) : undefined;
+    const typeSelect = document.getElementById(typeSelectId);
+    const attributesContainer = document.getElementById(attributesContainerId);
+
+    typeSelect.addEventListener("change", function() {
+      const nodeType = typeSelect.value;
+      const nodeId = idInput?.value;
+  
+      controller.handleTypeChange(responseEvent, nodeType, nodeId);
+    });
+    
+    document.addEventListener(responseEvent, function(event) {
+        const { needsProto, protoAttributes, realAttributes, attributesNames } = event.detail;
+        attributesContainer.innerHTML = "";
+
+        for (const attrName of attributesNames) {
+            const attrValue = realAttributes[attrName];
+            let attrInput;
+            if (needsProto) {
+                const protoValue = protoAttributes[attrName];
+                attrInput = createInputForAttribute(attrName, attrValue, protoValue);
+            } else {
+                attrInput = createInputForAttribute(attrName, attrValue);
+            }
+            attributesContainer.appendChild(attrInput);
+            attributesContainer.appendChild(document.createElement("hr"));
+      }
+    });
+  }  

@@ -1,6 +1,6 @@
 import * as render from './render.js';
 import * as uiUtils from './utils/uiUtils.js';
-import * as utils from './utils/utils.js';
+import * as controller from './controllers/controller.js';
 import store from './store.js';
 
 Neutralino.init();
@@ -15,89 +15,51 @@ if(NL_OS != "Darwin") {
 uiUtils.showInfo();
 
 document.getElementById("open-file-input").addEventListener("change", function(event) {
-    try {
-        const file = event.target.files[0];
-        store.dispatch('loadModelFromFile', file).then(model => {
-            render.renderNeuralNetworkModel(model);
-        })
-    } catch(error) {
-        console.error(error);
-    }
+    controller.handleFileInputChange(event);
 });
 
 document.getElementById("add-node-btn").addEventListener("click", function(event) {
-    const currentModel = store.getters.getModel;
-    if (!currentModel) {
-        return;
+    controller.handleAddNodeButtonClick();
+});
+document.addEventListener("showAddNodeModal", function(event) {
+    const { possibleTypes, possibleInputs, possibleOutputs } = event.detail;
+  
+    const selectMap = new Map([
+      ["add-node-node-type", possibleTypes],
+      ["add-node-node-input", possibleInputs],
+      ["add-node-node-output", possibleOutputs],
+    ]);
+  
+    uiUtils.setupModal(
+        "add-node-modal", 
+        "add-node-close",
+        selectMap, 
+        ["add-node-node-name"], 
+        ["add-node-node-attributes"]
+    );
+
+    uiUtils.setupTypeChangeHandler("add-type-change-event", "add-node-node-type", "add-node-node-attributes");  
+});
+document.getElementById("add-node").addEventListener("click", function() {
+    const nodeName = document.getElementById("add-node-node-name").value;
+    const nodeType = document.getElementById("add-node-node-type").value;
+    const inputs = [];
+    for (const option of document.getElementById("add-node-node-input").selectedOptions) {
+        inputs.push(option.value);
     }
+    const outputs = [];
+    for (const option of document.getElementById("add-node-node-output").selectedOptions) {
+        outputs.push(option.value);
+    }
+    const attributes = uiUtils.gatherInputs(document.getElementById("add-node-node-attributes"));
 
-    const possibleInputs = currentModel.getNodesIds();
-    const possibleOutputs = currentModel.getNodesIds();
-    const possibleTypes = currentModel.getNodeTypes();
-
-    var modal = document.getElementById("add-node-modal");
-    var btn = document.getElementById("add-node");
-    var close = document.getElementById("add-node-close");
-
-    var typeSelect = document.getElementById("add-node-node-type");
-    var inputSelect = document.getElementById("add-node-node-input");
-    var outputSelect = document.getElementById("add-node-node-output");
-    var attributesContainer = document.getElementById("add-node-node-attributes");
-    
-    uiUtils.appendOptions(possibleTypes, typeSelect);
-    uiUtils.appendOptions(possibleInputs, inputSelect);
-    uiUtils.appendOptions(possibleOutputs, outputSelect);
-
-    modal.style.display = "block";
-
-    close.addEventListener("click", function() {
-        modal.style.display = "none";
-        uiUtils.removeOptions(typeSelect);
-        uiUtils.removeOptions(inputSelect);
-        uiUtils.removeOptions(outputSelect);
-        attributesContainer.innerHTML = "";
-    });
-
-    typeSelect.addEventListener("change", function() {
-        const nodeType = typeSelect.value;
-        const attributes = currentModel.getNodeAttributes(nodeType);
-        const attributesNames = Object.keys(attributes);
-
-        attributesContainer.innerHTML = "";
-        for (const attrName of attributesNames) {
-            const attrValue = attributes[attrName];
-            const attrInput = uiUtils.createInputForAttribute(attrName, attrValue);
-            attributesContainer.appendChild(attrInput);
-            attributesContainer.appendChild(document.createElement("hr"));
-        }
-    });
-
-    btn.addEventListener("click", function() {
-        const nodeName = document.getElementById("add-node-node-name").value;
-        const nodeType = typeSelect.value;
-        const inputs = [];
-        for (const option of inputSelect.selectedOptions) {
-            inputs.push(option.value);
-        }
-        const outputs = [];
-        for (const option of outputSelect.selectedOptions) {
-            outputs.push(option.value);
-        }
-
-        const attributes = uiUtils.gatherInputs(attributesContainer);
-
-        store.commit('addNode', {
-            nodeId: nodeName, 
-            nodeType, 
-            nodeName, 
-            inputs, 
-            outputs, 
-            attributes
-        });
-                
-        close.click();
-
-        render.renderNeuralNetworkModel(store.getters.getModel);
+    controller.handleAddNode({
+        nodeId: nodeName, 
+        nodeType, 
+        nodeName, 
+        inputs, 
+        outputs, 
+        attributes
     });
 });
 
@@ -109,19 +71,18 @@ document.getElementById("delete-node-btn").addEventListener("click", function(ev
 
     const possibleIds = currentModel.getNodesIds();
 
-    var modal = document.getElementById("delete-node-modal");
     var btn = document.getElementById("delete-node");
     var close = document.getElementById("delete-node-close");
 
     var idSelect = document.getElementById("delete-node-node-id");
 
-    uiUtils.appendOptions(possibleIds, idSelect);
-
-    modal.style.display = "block";
+    const selectMap = new Map([
+        ["delete-node-node-id", possibleIds]
+    ]);
+    uiUtils.showModal("delete-node-modal", selectMap);
 
     close.addEventListener("click", function() {
-        modal.style.display = "none";
-        uiUtils.removeOptions(idSelect);
+        uiUtils.hideModal("delete-node-modal", Array.from(selectMap.keys()));
     });
 
     btn.addEventListener("click", function() {
@@ -144,7 +105,6 @@ document.getElementById("edit-node-btn").addEventListener("click", function(even
     const possibleOutputs = currentModel.getNodesIds();
     const possibleTypes = currentModel.getNodeTypes();
 
-    var modal = document.getElementById("edit-node-modal");
     var btn = document.getElementById("edit-node");
     var close = document.getElementById("edit-node-close");
 
@@ -155,12 +115,22 @@ document.getElementById("edit-node-btn").addEventListener("click", function(even
     var attributesContainer = document.getElementById("edit-node-node-attributes");
     var nameInput = document.getElementById("edit-node-node-name");
 
-    uiUtils.appendOptions(possibleIds, idSelect);
-    uiUtils.appendOptions(possibleTypes, typeSelect);
-    uiUtils.appendOptions(possibleInputs, inputSelect);
-    uiUtils.appendOptions(possibleOutputs, outputSelect);
+    const selectMap = new Map([
+        ["edit-node-node-id", possibleIds],
+        ["edit-node-node-type", possibleTypes],
+        ["edit-node-node-input", possibleInputs],
+        ["edit-node-node-output", possibleOutputs],
+    ]);
+    uiUtils.showModal("edit-node-modal", selectMap);
 
-    modal.style.display = "block";
+    close.addEventListener("click", function() {
+        uiUtils.hideModal(
+            "edit-node-modal", 
+            Array.from(selectMap.keys()), 
+            ["edit-node-node-name"], 
+            ["edit-node-node-attributes"]
+        );
+    });
 
     idSelect.addEventListener("change", function() {
         const nodeId = idSelect.value;
@@ -206,16 +176,6 @@ document.getElementById("edit-node-btn").addEventListener("click", function(even
             attributesContainer.appendChild(attrInput);
             attributesContainer.appendChild(document.createElement("hr"));
         }
-    });
-
-    close.addEventListener("click", function() {
-        modal.style.display = "none";
-        nameInput.value = "";
-        uiUtils.removeOptions(idSelect);
-        uiUtils.removeOptions(typeSelect);
-        uiUtils.removeOptions(inputSelect);
-        uiUtils.removeOptions(outputSelect);
-        attributesContainer.innerHTML = "";
     });
 
     btn.addEventListener("click", function() {
