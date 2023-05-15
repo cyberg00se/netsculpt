@@ -39,6 +39,27 @@ export function handleAddNode(nodeData) {
     render.renderNeuralNetworkModel(store.getters.getModel);
 }
 
+export function handleDeleteNodeButtonClick() {
+    const currentModel = store.getters.getModel;
+    if (!currentModel) {
+        return;
+    }
+  
+    const possibleIds = currentModel.getNodesIds();
+
+    const eventData = {
+        possibleIds
+    };
+    document.dispatchEvent(new CustomEvent('showDeleteNodeModal', { detail: eventData }));
+}
+
+export function handleDeleteNode(nodeId) {
+    store.commit('deleteNode', nodeId);
+            
+    document.getElementById("delete-node-close").click();
+    render.renderNeuralNetworkModel(store.getters.getModel);
+}
+
 export function handleTypeChange(responseEvent, nodeType, nodeId = undefined) {
     const currentModel = store.getters.getModel;
     if (!currentModel) {

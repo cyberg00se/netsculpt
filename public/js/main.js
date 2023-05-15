@@ -64,34 +64,25 @@ document.getElementById("add-node").addEventListener("click", function() {
 });
 
 document.getElementById("delete-node-btn").addEventListener("click", function(event) {
-    const currentModel = store.getters.getModel;
-    if (!currentModel) {
-        return;
-    }
-
-    const possibleIds = currentModel.getNodesIds();
-
-    var btn = document.getElementById("delete-node");
-    var close = document.getElementById("delete-node-close");
-
-    var idSelect = document.getElementById("delete-node-node-id");
+    controller.handleDeleteNodeButtonClick();
+});
+document.addEventListener("showDeleteNodeModal", function(event) {
+    const { possibleIds } = event.detail;
 
     const selectMap = new Map([
         ["delete-node-node-id", possibleIds]
     ]);
-    uiUtils.showModal("delete-node-modal", selectMap);
 
-    close.addEventListener("click", function() {
-        uiUtils.hideModal("delete-node-modal", Array.from(selectMap.keys()));
-    });
+    uiUtils.setupModal(
+        "delete-node-modal", 
+        "delete-node-close",
+        selectMap
+    );
+});
+document.getElementById("delete-node").addEventListener("click", function() {
+    const id = document.getElementById("delete-node-node-id").value;
 
-    btn.addEventListener("click", function() {
-        const id = idSelect.value;
-        store.commit('deleteNode', id);
-                
-        close.click();
-        render.renderNeuralNetworkModel(store.getters.getModel);
-    });
+    controller.handleDeleteNode(id);
 });
 
 document.getElementById("edit-node-btn").addEventListener("click", function(event) {
