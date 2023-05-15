@@ -22,6 +22,17 @@ export default new Vuex.Store({
       },
       deleteNode (state, id) {
         state.currentModel.removeNode(id);
+      },
+      editNode (state, { nodeId, nodeName, nodeType, inputs, outputs, attributes }) {
+        const updatedNode = new Node(
+          nodeId,
+          nodeType,
+          nodeName,
+          inputs.filter(x => x !== ""),
+          outputs.filter(x => x !== ""),
+          attributes
+        );
+        state.currentModel.updateNode(nodeId, updatedNode);
       }
     },
     actions: {

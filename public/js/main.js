@@ -233,16 +233,14 @@ document.getElementById("edit-node-btn").addEventListener("click", function(even
 
         const attributes = uiUtils.gatherInputs(attributesContainer);
 
-        /*store.commit('addNode', {
+        store.commit('editNode', {
             nodeId: id, 
             nodeType, 
             nodeName, 
             inputs, 
             outputs, 
             attributes
-        });*/
-        
-        console.log(`Stub for edit node ${id}`);
+        });
                 
         close.click();
 

@@ -164,6 +164,13 @@ export class NeuralNetworkModel {
             connection.fromNode.getId() !== nodeId && connection.toNode.getId() !== nodeId
         );
     }
+
+    updateNode(nodeId, updatedNode) {
+        const index = this.nodes.findIndex(node => node.getId() === nodeId);
+        if (index !== -1) {
+            this.nodes.splice(index, 1, updatedNode);
+        }
+    }
     
     updateNodeProperties(nodeId, properties) {
         const node = this.nodes.find(node => node.id === nodeId);
