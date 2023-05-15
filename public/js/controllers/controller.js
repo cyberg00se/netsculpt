@@ -60,6 +60,34 @@ export function handleDeleteNode(nodeId) {
     render.renderNeuralNetworkModel(store.getters.getModel);
 }
 
+export function handleEditNodeButtonClick() {
+    const currentModel = store.getters.getModel;
+    if (!currentModel) {
+        return;
+    }
+  
+    const possibleIds = currentModel.getNodesIds();
+    const possibleInputs = currentModel.getNodesIds();
+    const possibleOutputs = currentModel.getNodesIds();
+    const possibleTypes = currentModel.getNodeTypes();
+
+    const eventData = {
+        possibleIds,
+        possibleTypes,
+        possibleInputs,
+        possibleOutputs
+    };
+    document.dispatchEvent(new CustomEvent('showEditNodeModal', { detail: eventData }));
+}
+
+export function handleEditNode(nodeData) {
+    store.commit('editNode', nodeData);
+            
+    document.getElementById("edit-node-close").click();
+    render.renderNeuralNetworkModel(store.getters.getModel);
+}
+
+
 export function handleTypeChange(responseEvent, nodeType, nodeId = undefined) {
     const currentModel = store.getters.getModel;
     if (!currentModel) {
@@ -82,6 +110,27 @@ export function handleTypeChange(responseEvent, nodeType, nodeId = undefined) {
         protoAttributes,
         realAttributes,
         attributesNames
+    };
+    document.dispatchEvent(new CustomEvent(responseEvent, { detail: eventData }));
+}
+
+export function handleIdChange(responseEvent, nodeId) {
+    const currentModel = store.getters.getModel;
+    if (!currentModel) {
+        return;
+    }
+    const node = currentModel.getNodeById(nodeId);
+
+    const nodeName = node.getName();
+    const nodeType = node.getType();
+    const nodeInputs = node.getInputs();
+    const nodeOutputs = node.getOutputs();
+
+    const eventData = {
+        nodeName,
+        nodeType,
+        nodeInputs,
+        nodeOutputs
     };
     document.dispatchEvent(new CustomEvent(responseEvent, { detail: eventData }));
 }

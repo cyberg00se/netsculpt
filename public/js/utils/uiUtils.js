@@ -225,7 +225,7 @@ export function setupTypeChangeHandler(responseEvent, typeSelectId, attributesCo
   
       controller.handleTypeChange(responseEvent, nodeType, nodeId);
     });
-    
+
     document.addEventListener(responseEvent, function(event) {
         const { needsProto, protoAttributes, realAttributes, attributesNames } = event.detail;
         attributesContainer.innerHTML = "";
@@ -241,6 +241,29 @@ export function setupTypeChangeHandler(responseEvent, typeSelectId, attributesCo
             }
             attributesContainer.appendChild(attrInput);
             attributesContainer.appendChild(document.createElement("hr"));
-      }
+        }
     });
-  }  
+}  
+
+export function setupIdChangeHandler(responseEvent, idSelectId, nameInputId, typeSelectId, inputSelectId, outputSelectId) {
+    const idSelect = document.getElementById(idSelectId);
+    const nameInput = document.getElementById(nameInputId);
+    const typeSelect = document.getElementById(typeSelectId);
+    const inputSelect = document.getElementById(inputSelectId);
+    const outputSelect = document.getElementById(outputSelectId);
+
+    idSelect.addEventListener("change", function() {
+      const nodeId = idSelect.value;
+      controller.handleIdChange(responseEvent, nodeId);
+    });
+
+    document.addEventListener(responseEvent, function(event) {
+        const { nodeName, nodeType, nodeInputs, nodeOutputs } = event.detail;
+
+        nameInput.value = nodeName;
+        typeSelect.value = nodeType;
+        typeSelect.dispatchEvent(new Event('change'));
+        setSelectValues(inputSelect, nodeInputs);
+        setSelectValues(outputSelect, nodeOutputs);    
+    });
+}  

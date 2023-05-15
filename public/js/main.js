@@ -1,7 +1,5 @@
-import * as render from './render.js';
 import * as uiUtils from './utils/uiUtils.js';
 import * as controller from './controllers/controller.js';
-import store from './store.js';
 
 Neutralino.init();
 
@@ -86,25 +84,10 @@ document.getElementById("delete-node").addEventListener("click", function() {
 });
 
 document.getElementById("edit-node-btn").addEventListener("click", function(event) {
-    const currentModel = store.getters.getModel;
-    if (!currentModel) {
-        return;
-    }
-
-    const possibleIds = currentModel.getNodesIds();
-    const possibleInputs = currentModel.getNodesIds();
-    const possibleOutputs = currentModel.getNodesIds();
-    const possibleTypes = currentModel.getNodeTypes();
-
-    var btn = document.getElementById("edit-node");
-    var close = document.getElementById("edit-node-close");
-
-    var idSelect = document.getElementById("edit-node-node-id");
-    var typeSelect = document.getElementById("edit-node-node-type");
-    var inputSelect = document.getElementById("edit-node-node-input");
-    var outputSelect = document.getElementById("edit-node-node-output");
-    var attributesContainer = document.getElementById("edit-node-node-attributes");
-    var nameInput = document.getElementById("edit-node-node-name");
+    controller.handleEditNodeButtonClick();
+});
+document.addEventListener("showEditNodeModal", function(event) {
+    const { possibleIds, possibleTypes, possibleInputs, possibleOutputs } = event.detail;
 
     const selectMap = new Map([
         ["edit-node-node-id", possibleIds],
@@ -112,89 +95,51 @@ document.getElementById("edit-node-btn").addEventListener("click", function(even
         ["edit-node-node-input", possibleInputs],
         ["edit-node-node-output", possibleOutputs],
     ]);
-    uiUtils.showModal("edit-node-modal", selectMap);
 
-    close.addEventListener("click", function() {
-        uiUtils.hideModal(
-            "edit-node-modal", 
-            Array.from(selectMap.keys()), 
-            ["edit-node-node-name"], 
-            ["edit-node-node-attributes"]
-        );
-    });
+    uiUtils.setupModal(
+        "edit-node-modal", 
+        "edit-node-close",
+        selectMap, 
+        ["edit-node-node-name"], 
+        ["edit-node-node-attributes"]
+    );
 
-    idSelect.addEventListener("change", function() {
-        const nodeId = idSelect.value;
-        const node = currentModel.getNodeById(nodeId);
+    uiUtils.setupIdChangeHandler(
+        "edit-id-change-event",
+        "edit-node-node-id",
+        "edit-node-node-name", 
+        "edit-node-node-type", 
+        "edit-node-node-input", 
+        "edit-node-node-output"
+    );  
 
-        const nodeName = node.getName();
-        const nodeType = node.getType();
-        const nodeInputs = node.getInputs();
-        const nodeOutputs = node.getOutputs();
+    uiUtils.setupTypeChangeHandler(
+        "edit-type-change-event", 
+        "edit-node-node-type", 
+        "edit-node-node-attributes", 
+        "edit-node-node-id"
+    );  
+});
+document.getElementById("edit-node").addEventListener("click", function() {
+    const nodeId = document.getElementById("edit-node-node-id").value;
+    const nodeName = document.getElementById("edit-node-node-name").value;
+    const nodeType = document.getElementById("edit-node-node-type").value;
+    const inputs = [];
+    for (const option of document.getElementById("edit-node-node-input").selectedOptions) {
+        inputs.push(option.value);
+    }
+    const outputs = [];
+    for (const option of document.getElementById("edit-node-node-output").selectedOptions) {
+        outputs.push(option.value);
+    }
+    const attributes = uiUtils.gatherInputs(document.getElementById("edit-node-node-attributes"));
 
-        nameInput.value = nodeName;
-        typeSelect.value = nodeType;
-        typeSelect.dispatchEvent(new Event('change'));
-        uiUtils.setSelectValues(inputSelect, nodeInputs);
-        uiUtils.setSelectValues(outputSelect, nodeOutputs);   
-    });
-
-    typeSelect.addEventListener("change", function() {
-        const nodeType = typeSelect.value;
-        const nodeId = idSelect.value;
-        const node = currentModel.getNodeById(nodeId);
-        
-        const protoAttributes = currentModel.getNodeAttributes(nodeType);
-        let realAttributes;
-
-        if(nodeId && nodeType === node.getType()) {
-            realAttributes = node.getAttributes();
-        } else {
-            realAttributes = protoAttributes;
-        }
-        const attributesNames = Object.keys(protoAttributes);
-
-        attributesContainer.innerHTML = "";
-        for (const attrName of attributesNames) {
-            const attrValue = realAttributes[attrName];
-            let attrInput;
-            if (nodeId && nodeType === node.getType()) {
-                const protoValue = protoAttributes[attrName];
-                attrInput = uiUtils.createInputForAttribute(attrName, attrValue, protoValue);
-            } else {
-                attrInput = uiUtils.createInputForAttribute(attrName, attrValue); 
-            }
-            attributesContainer.appendChild(attrInput);
-            attributesContainer.appendChild(document.createElement("hr"));
-        }
-    });
-
-    btn.addEventListener("click", function() {
-        const id = idSelect.value;
-        const nodeName = nameInput.value;
-        const nodeType = typeSelect.value;
-        const inputs = [];
-        for (const option of inputSelect.selectedOptions) {
-            inputs.push(option.value);
-        }
-        const outputs = [];
-        for (const option of outputSelect.selectedOptions) {
-            outputs.push(option.value);
-        }
-
-        const attributes = uiUtils.gatherInputs(attributesContainer);
-
-        store.commit('editNode', {
-            nodeId: id, 
-            nodeType, 
-            nodeName, 
-            inputs, 
-            outputs, 
-            attributes
-        });
-                
-        close.click();
-
-        render.renderNeuralNetworkModel(store.getters.getModel);
+    controller.handleEditNode({
+        nodeId, 
+        nodeType, 
+        nodeName, 
+        inputs, 
+        outputs, 
+        attributes
     });
 });
