@@ -24,6 +24,25 @@ export const tensorflowNodeTypes = [
     'MatMul',
     'Elu'
 ];
+export const onnxDataTypes = {
+    'undefined': 0,
+    'float': 1,
+    'uint8': 2,
+    'int8': 3,
+    'uint16': 4,
+    'int16': 5,
+    'int32': 6,
+    'int64': 7,
+    'string': 8,
+    'bool': 9,
+    'float16': 10,
+    'double': 11,
+    'uint32': 12,
+    'uint64': 13,
+    'complex64': 14,
+    'complex128': 15,
+    'bfloat16': 16
+};
 export const tensorflowDataTypes = {
     'DT_FLOAT': 1,
     'DT_DOUBLE': 2,
@@ -50,6 +69,71 @@ export const tensorflowDataTypes = {
     'DT_UINT64': 23,
     'DT_FLOAT8_E5M2': 24,
     'DT_FLOAT8_E4M3FN': 25
+};
+
+const onnxNodeAttributes = {
+    Input: {
+        elemType: Object.keys(onnxDataTypes),
+        shape: [],
+        content: ""       
+    },
+    Output: {
+        elemType: Object.keys(onnxDataTypes),
+        shape: []          
+    },
+    Conv: {
+        strides: [],
+        pads: [],
+        kernel_shape: []
+    },
+    Relu: {},
+    MaxPool: {
+        strides: [],
+        pads: [],
+        kernel_shape: []   
+    },
+    Concat: {
+        axis: 0
+    },
+    Dropout: {
+        ratio: 0,
+        is_test: false
+    },
+    GlobalAveragePool: {},
+    Softmax: {}
+};
+
+const tensorflowNodeAttributes = {
+    Placeholder: {
+        dtype: Object.keys(tensorflowDataTypes),
+        shape: []
+    },
+    Identity: {
+        T: Object.keys(tensorflowDataTypes),
+        _class: {
+            list: []
+        }
+    },
+    Const: {
+        dtype: Object.keys(tensorflowDataTypes),
+        value: {
+            content: "",
+            shape: [],
+            dtype: Object.keys(tensorflowDataTypes)
+        }
+    },
+    BiasAdd: {
+        data_format: ['NHWC', 'NCHW'],
+        T: Object.keys(tensorflowDataTypes)
+    },
+    MatMul: {
+        transpose_a: false,
+        transpose_b: false,
+        T: Object.keys(tensorflowDataTypes)
+    },
+    Elu: {
+        T: Object.keys(tensorflowDataTypes)
+    }
 };
 
 export class NeuralNetworkModel {
@@ -120,50 +204,9 @@ export class NeuralNetworkModel {
     getNodeAttributes(nodeType) {
         switch (this.type) {
           case ModelType.ONNX:
-            // TODO: implement this for ONNX
-            return null;
+            return onnxNodeAttributes[nodeType] || null;
           case ModelType.TENSORFLOW:
-            const dataTypes = Object.keys(tensorflowDataTypes);
-            switch (nodeType) {
-              case 'Placeholder':
-                return {
-                  'dtype': dataTypes,
-                  'shape': [],
-                };
-              case 'Identity':
-                return {
-                  'T': dataTypes,
-                  '_class': {
-                      'list': []
-                  }
-                };
-            case 'Const':
-                return {
-                  'dtype': dataTypes,
-                  'value': {
-                      'content': "",
-                      'shape': [],
-                      'dtype': dataTypes
-                  },
-                };
-            case 'BiasAdd':
-                return {
-                  'data_format': ['NHWC', 'NCHW'],
-                  'T': dataTypes,
-                };
-            case 'MatMul':
-                return {
-                  'transpose_a': false,
-                  'transpose_b': false,
-                  'T': dataTypes,
-                };
-            case 'Elu':
-                return {
-                  'T': dataTypes,
-                };
-            default:
-                return null;
-          }
+            return tensorflowNodeAttributes[nodeType] || null;
         default:
             return null;
         }

@@ -76,6 +76,8 @@ export function createInputForAttribute(attrName, attrValue) {
         container.appendChild(createTextInputForAttribute(attrName, attrValue));
     } else if (typeof attrValue === "object" && attrValue !== null) {
         container.appendChild(createInputsForObjectAttribute(attrValue));
+    } else if (typeof attrValue === "number") {
+        container.appendChild(createNumberInputForAttribute(attrValue));
     } else {
         container.appendChild(createTextInputForAttribute(attrName, ""));
     }
@@ -100,6 +102,13 @@ export function createTextInputForAttribute(attrName, attrValue) {
     const input = document.createElement("input");
     input.type = "text";
     input.placeholder = attrName;
+    input.value = attrValue;
+    return input;
+}
+
+export function createNumberInputForAttribute(attrValue) {
+    const input = document.createElement("input");
+    input.type = "number";
     input.value = attrValue;
     return input;
 }
@@ -136,6 +145,8 @@ export function gatherInputs(container) {
                     if (inputContainer.tagName === 'INPUT' || inputContainer.tagName === 'SELECT') {
                         if (inputContainer.type === 'checkbox') {
                             inputs[label] = inputContainer.checked;
+                        } else if (inputContainer.type === 'number') {
+                            inputs[label] = parseFloat(inputContainer.value);
                         } else {
                             inputs[label] = utils.parseArrayString(inputContainer.value);
                         }

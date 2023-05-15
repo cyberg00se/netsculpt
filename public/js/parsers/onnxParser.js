@@ -25,7 +25,8 @@ async function parseONNXModelFromFile(file) {
                     const outputs = node.output;
 
                     const attributes = node.attribute.reduce((acc, attr) => {
-                        acc[attr.name] = getFirstNonEmptyProperty(attr, ['type', 'name']).value;
+                        const value = getFirstNonEmptyProperty(attr, ['type', 'name']).value;
+                        acc[attr.name] = attr.name.startsWith('is_') ? Boolean(value) : value;
                         return acc;
                     }, {});
 
@@ -41,8 +42,9 @@ async function parseONNXModelFromFile(file) {
                     //content is a HUGE tensor usually
                     const content = rawModel.graph.initializer.find(elem => elem.name === node.name)?.rawData;
                     const attributes = {
-                        elemType: node.type.tensorType.elemType,
+                        elemType: OnnxDataType[node.type.tensorType.elemType],
                         shape: node.type.tensorType.shape.dim.map(dim => dim.dimValue),
+                        content: content ? "..." : undefined
                         //content
                     };
 
@@ -56,7 +58,7 @@ async function parseONNXModelFromFile(file) {
                     const outputs = [];
 
                     const attributes = {
-                        elemType: node.type.tensorType.elemType,
+                        elemType: OnnxDataType[node.type.tensorType.elemType],
                         shape: node.type.tensorType.shape.dim.map(dim => dim.dimValue)
                     };
 
@@ -100,5 +102,25 @@ async function parseONNXModelFromFile(file) {
         reader.readAsArrayBuffer(file);
     });
 }
+
+const OnnxDataType = {
+    0: 'undefined',
+    1: 'float',
+    2: 'uint8',
+    3: 'int8',
+    4: 'uint16',
+    5: 'int16',
+    6: 'int32',
+    7: 'int64',
+    8: 'string',
+    9: 'bool',
+    10: 'float16',
+    11: 'double',
+    12: 'uint32',
+    13: 'uint64',
+    14: 'complex64',
+    15: 'complex128',
+    16: 'bfloat16'
+};
   
-export { parseONNXModelFromFile };
+export { parseONNXModelFromFile, OnnxDataType };
