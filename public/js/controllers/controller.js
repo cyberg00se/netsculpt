@@ -87,7 +87,6 @@ export function handleEditNode(nodeData) {
     render.renderNeuralNetworkModel(store.getters.getModel);
 }
 
-
 export function handleTypeChange(responseEvent, nodeType, nodeId = undefined) {
     const currentModel = store.getters.getModel;
     if (!currentModel) {
