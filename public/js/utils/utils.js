@@ -25,4 +25,14 @@ function getFirstNonEmptyProperty(obj, excludeProps = []) {
     return null;
 }
 
-export { loadProtoDefinition, getFirstNonEmptyProperty };
+function parseArrayString(str) {
+    try {
+        const arr = JSON.parse(str);
+        if (Array.isArray(arr)) {
+            return arr;
+        }
+        } catch (err) {}
+    return str;
+}
+
+export { loadProtoDefinition, getFirstNonEmptyProperty, parseArrayString };

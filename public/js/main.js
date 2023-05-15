@@ -41,6 +41,7 @@ document.getElementById("add-node-btn").addEventListener("click", function(event
     var typeSelect = document.getElementById("add-node-node-type");
     var inputSelect = document.getElementById("add-node-node-input");
     var outputSelect = document.getElementById("add-node-node-output");
+    var attributesContainer = document.getElementById("add-node-node-attributes");
     
     uiUtils.appendOptions(possibleTypes, typeSelect);
     uiUtils.appendOptions(possibleInputs, inputSelect);
@@ -53,6 +54,21 @@ document.getElementById("add-node-btn").addEventListener("click", function(event
         uiUtils.removeOptions(typeSelect);
         uiUtils.removeOptions(inputSelect);
         uiUtils.removeOptions(outputSelect);
+        attributesContainer.innerHTML = "";
+    });
+
+    typeSelect.addEventListener("change", function() {
+        const nodeType = typeSelect.value;
+        const attributes = currentModel.getNodeAttributes(nodeType);
+        const attributesNames = Object.keys(attributes);
+
+        attributesContainer.innerHTML = "";
+        for (const attrName of attributesNames) {
+            const attrValue = attributes[attrName];
+            const attrInput = uiUtils.createInputForAttribute(attrName, attrValue);
+            attributesContainer.appendChild(attrInput);
+            attributesContainer.appendChild(document.createElement("hr"));
+        }
     });
 
     btn.addEventListener("click", function() {
@@ -66,7 +82,8 @@ document.getElementById("add-node-btn").addEventListener("click", function(event
         for (const option of outputSelect.selectedOptions) {
             outputs.push(option.value);
         }
-        const attributes = [];
+
+        const attributes = uiUtils.gatherInputs(attributesContainer);
 
         store.commit('addNode', {
             nodeId: nodeName, 

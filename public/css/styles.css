@@ -223,3 +223,9 @@ form > select, form > input {
     display: flex;
     flex-direction: column;
 }
+
+.modal-content label {
+    padding-right: 5px;
+    margin-top: 5px;
+    display: block;
+}
