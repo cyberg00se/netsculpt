@@ -57,25 +57,36 @@ export function removeOptions(element) {
     }
 }
 
-export function createInputForAttribute(attrName, attrValue) {
+export function setSelectValues(element, values) {
+    for (let option of element.options) {
+        option.selected = values.includes(option.value);
+    }
+}
+
+export function createInputForAttribute(attrName, attrValue, protoValue = undefined) {
     const container = document.createElement("div");
 
     const label = document.createElement("label");
     label.textContent = attrName;
     container.appendChild(label);
 
-    if (Array.isArray(attrValue)) {
-        if (attrValue.length === 0) {
-            container.appendChild(createTextInputForAttribute(attrName, "[ ]"));
-        } else {
+    if(attrName === 'T' || attrName === 'dtype' || attrName === 'elemType' || attrName === 'data_format') {
+        if(protoValue) {
+            container.appendChild(createSelectForArrayAttribute(protoValue));
+            container.lastChild.value = attrValue;
+        }
+        else {
             container.appendChild(createSelectForArrayAttribute(attrValue));
         }
+    }
+    else if (Array.isArray(attrValue)) {
+        container.appendChild(createTextInputForAttribute(attrName, utils.stringifyArray(attrValue)));
     } else if (typeof attrValue === "boolean") {
         container.appendChild(createCheckboxForAttribute(attrValue));
     } else if (typeof attrValue === "string") {
         container.appendChild(createTextInputForAttribute(attrName, attrValue));
     } else if (typeof attrValue === "object" && attrValue !== null) {
-        container.appendChild(createInputsForObjectAttribute(attrValue));
+        container.appendChild(createInputsForObjectAttribute(attrValue, protoValue));
     } else if (typeof attrValue === "number") {
         container.appendChild(createNumberInputForAttribute(attrValue));
     } else {
@@ -87,7 +98,12 @@ export function createInputForAttribute(attrName, attrValue) {
 
 export function createSelectForArrayAttribute(attrValue) {
     const select = document.createElement("select");
-    appendOptions(attrValue, select);
+    if (Array.isArray(attrValue)) {
+        appendOptions(attrValue, select);
+    } else {
+        //only single selected value, need to get full list
+        appendOptions([attrValue], select);
+    }
     return select;
 }
 
@@ -113,11 +129,12 @@ export function createNumberInputForAttribute(attrValue) {
     return input;
 }
 
-export function createInputsForObjectAttribute(attrValue) {
+export function createInputsForObjectAttribute(attrValue, protoValue) {
     const container = document.createElement("div");
     for (const subAttr in attrValue) {
         const subAttrValue = attrValue[subAttr];
-        const subAttrInput = createInputForAttribute(subAttr, subAttrValue);
+        const subAtrrProto = protoValue ? protoValue[subAttr] : undefined
+        const subAttrInput = createInputForAttribute(subAttr, subAttrValue, subAtrrProto);
         container.appendChild(subAttrInput);
     }
     return container;

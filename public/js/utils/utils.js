@@ -31,8 +31,15 @@ function parseArrayString(str) {
         if (Array.isArray(arr)) {
             return arr;
         }
-        } catch (err) {}
+    } catch (err) {}
     return str;
 }
 
-export { loadProtoDefinition, getFirstNonEmptyProperty, parseArrayString };
+function stringifyArray(arr) {
+    try {
+        return JSON.stringify(arr);
+    } catch (err) {}
+    return arr;
+}
+
+export { loadProtoDefinition, getFirstNonEmptyProperty, parseArrayString, stringifyArray };

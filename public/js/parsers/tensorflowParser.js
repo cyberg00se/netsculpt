@@ -23,6 +23,11 @@ async function parseTensorFlowModelFromFile(file) {
                     const name = node.name;
                     const inputs = node.input;
                     const outputs = [];
+                    for (const otherNode of rawModel.node) {
+                      if (otherNode.input.includes(id)) {
+                        outputs.push(otherNode.name);
+                      }
+                    }
 
                     const attributes = {};
                     for(const key of Object.keys(node.attr)) {
