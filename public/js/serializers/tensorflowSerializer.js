@@ -32,7 +32,7 @@ async function serializeTensorFlowModel(model) {
                 }),
             };
             console.log(updatedGraph);
-            //result data is still corrupted 
+
             const message = GraphDef.create(updatedGraph);
             const buffer = GraphDef.encode(message).finish();
             const modelData = new Uint8Array(buffer);
@@ -56,7 +56,7 @@ function serializeTensorflowAttributeValue(key, value, AttrValue) {
         case "number":
             if (key === 'dtype' || key === 'T') {
                 attribute = { type: value };
-            } else if (Number.isInteger(value)) { //missing props from attr value in simple attrs?...
+            } else if (Number.isInteger(value)) {
                 attribute = { i: value };
             } else {
                 attribute = { f: value };
@@ -73,7 +73,6 @@ function serializeTensorflowAttributeValue(key, value, AttrValue) {
                 attribute = { shape: { dim: value.map((dim) => ({ size: dim })) } };
             } else if (key === 'value') {
                 const tensorValue = {
-                    //////TENSOR PROTO, there are many additional props
                     dtype: TensorflowDataType[value.dtype],
                     tensorShape: { dim: value.shape.map((dim) => ({ size: dim })) },
                     tensorContent: value.content ? [] : [], ////////// fix tensor content
