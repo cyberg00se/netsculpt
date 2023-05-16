@@ -45,6 +45,15 @@ export default new Vuex.Store({
     },
     getters: {
       getModel: state => state.currentModel,
-      getSerializedModel: state => serializer.serializeModel(state.currentModel)
+      getSerializedModel: state => {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const serializedModel = await serializer.serializeModel(state.currentModel);
+            resolve(serializedModel);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      }
     }
 });

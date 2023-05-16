@@ -15,13 +15,13 @@ export function handleFileInputChange(event) {
     }
 }
 
-export function handleExportButtonClick(event) {
+export async function handleExportButtonClick(event) {
     try {
         const currentModel = store.getters.getModel;
         if (!currentModel) {
             return;
         }
-        const rawModelBuffer = store.getters.getSerializedModel;
+        const rawModelBuffer = await store.getters.getSerializedModel;
         const blob = new Blob([rawModelBuffer], { type: 'application/octet-stream' });
 
         downloadBlob(blob, currentModel.getFileName());
