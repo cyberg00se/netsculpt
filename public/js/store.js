@@ -1,4 +1,5 @@
 import * as parser from './parsers/parser.js';
+import * as serializer from './serializers/serializer.js';
 import { Node } from "./models/Node.js";
 
 export default new Vuex.Store({
@@ -43,6 +44,7 @@ export default new Vuex.Store({
       }
     },
     getters: {
-      getModel: state => state.currentModel
+      getModel: state => state.currentModel,
+      getSerializedModel: state => serializer.serializeModel(state.currentModel)
     }
 });

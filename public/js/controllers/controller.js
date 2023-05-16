@@ -14,6 +14,20 @@ export function handleFileInputChange(event) {
     }
 }
 
+export function handleExportButtonClick(event) {
+    try {
+        const currentModel = store.getters.getModel;
+        if (!currentModel) {
+            return;
+        }
+        const rawModelBuffer = store.getters.getSerializedModel;
+        //
+        
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export function handleAddNodeButtonClick() {
     const currentModel = store.getters.getModel;
     if (!currentModel) {
