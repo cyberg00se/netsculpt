@@ -32,7 +32,7 @@ async function serializeTensorFlowModel(model) {
                 }),
             };
             console.log(updatedGraph);
-
+            //result data is still corrupted 
             const message = GraphDef.create(updatedGraph);
             const buffer = GraphDef.encode(message).finish();
             const modelData = new Uint8Array(buffer);

@@ -92,7 +92,7 @@ async function parseONNXModelFromFile(file) {
                     });
                 });
 
-                const parsedModel = new NeuralNetworkModel(nodes, connections, ModelType.ONNX, rawModel);
+                const parsedModel = new NeuralNetworkModel(nodes, connections, ModelType.ONNX, rawModel, file.name);
 
                 resolve(parsedModel);
             } catch (error) {

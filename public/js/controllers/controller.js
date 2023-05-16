@@ -1,5 +1,6 @@
 import store from '../store.js';
 import * as render from '../render.js';
+import { downloadBlob } from '../utils/uiUtils.js';
 
 export function handleFileInputChange(event) {
     try {
@@ -21,8 +22,9 @@ export function handleExportButtonClick(event) {
             return;
         }
         const rawModelBuffer = store.getters.getSerializedModel;
-        //
-        
+        const blob = new Blob([rawModelBuffer], { type: 'application/octet-stream' });
+
+        downloadBlob(blob, currentModel.getFileName());
     } catch (error) {
         console.error(error);
     }

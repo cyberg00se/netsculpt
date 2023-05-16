@@ -137,11 +137,12 @@ const tensorflowNodeAttributes = {
 };
 
 export class NeuralNetworkModel {
-    constructor(nodes, connections, type, raw) {
+    constructor(nodes, connections, type, raw, fileName) {
       this.nodes = nodes;
       this.connections = connections;
       this.type = type;
       this.raw = raw;
+      this.fileName = fileName;
     }
 
     addNode(node) {
@@ -225,6 +226,10 @@ export class NeuralNetworkModel {
 
     getRaw() {
         return this.raw;
+    }
+
+    getFileName() {
+        return this.fileName;
     }
 
     getNodes() {

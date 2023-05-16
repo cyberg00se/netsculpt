@@ -53,7 +53,7 @@ async function parseTensorFlowModelFromFile(file) {
                     return self.findIndex(c => c.isEqual(connection)) === index
                   });
 
-                const parsedModel = new NeuralNetworkModel(nodes, connections, ModelType.TENSORFLOW, rawModel);
+                const parsedModel = new NeuralNetworkModel(nodes, connections, ModelType.TENSORFLOW, rawModel, file.name);
 
                 resolve(parsedModel);
             } catch (error) {
