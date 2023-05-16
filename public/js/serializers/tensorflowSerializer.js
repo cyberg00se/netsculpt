@@ -80,7 +80,7 @@ function serializeTensorflowAttributeValue(key, value, AttrValue) {
                 };
                 attribute = { tensor: tensorValue };
             } else if (key === "_class") {
-                const listValue = serializeTensorflowAttributeValue("list", stringifyArray(value.list), AttrValue);
+                const listValue = { s: value.list.map(elem => encoder.encode(elem)) };
                 attribute = { list: listValue };
             }
             break;
