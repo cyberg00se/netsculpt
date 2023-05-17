@@ -88,10 +88,16 @@ async function parseONNXModelFromFile(file) {
                             outputNodes = nodes.filter(node => node.id === output);
                         }
                         outputNodes.forEach((outputNode) => {
-                            const connection = new Connection(`${node.id}_${outputNode.id}`, node, outputNode);
+                            const connection = new Connection(`${node.id}_${outputNode.id}`, node, outputNode, output);
                             connections.push(connection);
                         });
                     });
+                });
+                nodes.forEach((node) => {
+                    if(node.type !== 'Input' && node.type !== 'Output') {
+                        node.inputs = connections.filter(conn => conn.target === node.id).map(conn => conn.source);
+                        node.outputs = connections.filter(conn => conn.source === node.id).map(conn => conn.target);
+                    }
                 });
 
                 const parsedModel = new NeuralNetworkModel(nodes, connections, ModelType.ONNX, rawModel, file.name);

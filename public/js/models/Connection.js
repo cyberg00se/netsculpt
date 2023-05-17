@@ -1,10 +1,11 @@
 export class Connection {
-    constructor(id, fromNode, toNode) {
+    constructor(id, fromNode, toNode, rawName = undefined) {
       this.id = id;
       this.fromNode = fromNode;
       this.toNode = toNode;
       this.source = fromNode.getId();
       this.target = toNode.getId();
+      this.rawName = rawName;
     }
   
     updateConnectionProperties(properties) {
@@ -21,6 +22,10 @@ export class Connection {
     
     getToNode() {
         return this.toNode;
+    }
+
+    getRawName() {
+        return this.rawName;
     }
 
     setFromNode(fromNode) {

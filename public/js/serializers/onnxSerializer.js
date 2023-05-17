@@ -60,8 +60,14 @@ async function serializeONNXModel(model) {
           
                 rawNode.name = node.name;
                 rawNode.opType = node.type;
-                rawNode.input = node.inputs;
-                rawNode.output = node.outputs;
+                rawNode.input = node.inputs.map(input => {
+                    const connection = model.connections.find(conn => conn.target === node.id && conn.source === input);
+                    return connection.rawName ? connection.rawName : connection.id;
+                });
+                rawNode.output = node.outputs.map(output => {
+                    const connection = model.connections.find(conn => conn.source === node.id && conn.target === output);
+                    return connection.rawName ? connection.rawName : connection.id;
+                });
                 rawNode.attribute = Object.entries(node.attributes).map(([key, value]) =>
                     createAttribute(key, value)
                 );
