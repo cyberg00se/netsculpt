@@ -68,9 +68,9 @@ export class NeuralNetworkModel {
     getNodeTypes() {
         switch (this.type) {
             case ModelType.ONNX:
-              return onnxNodeTypes;
+              return Object.values(onnxNodeTypes);
             case ModelType.TENSORFLOW:
-              return tensorflowNodeTypes;
+              return Object.values(tensorflowNodeTypes);
             default:
               return [];
         }
