@@ -90,7 +90,7 @@ export function createInputForAttribute(attrName, attrValue, protoValue = undefi
                 "node-content-close", 
                 "node-content-textarea", 
                 "save-node-content",
-                utils.stringifyArray(attrValue),
+                attrValue,
                 nodeId
             );
         });
@@ -123,6 +123,13 @@ export function createBigContentModal(modalId, closeId, textareaId, buttonId, va
     labelElement.textContent = nodeId;
 
     const button = document.getElementById(buttonId);
+    button.addEventListener('click', function() {
+        const id = labelElement.textContent;
+        const content = contentTextarea.value;
+    
+        controller.updateNodeContentById(id, content);
+        document.getElementById(closeId).click();
+    });
     button.disabled = false;
 }
 
@@ -312,7 +319,7 @@ export function setupIdChangeHandler(responseEvent, idSelectId, nameInputId, typ
 export function setupNodeContentTextarea(responseEvent, textareaId, nodeId) {  
     document.addEventListener(responseEvent, function(event) {
         const { content } = event.detail;
-        textareaElement.value = utils.stringifyArray(content);
+        textareaElement.value = content;
     });
 
     const textareaElement = document.getElementById(textareaId);
@@ -330,4 +337,4 @@ export function downloadBlob(blob, fileName) {
     link.click();
 
     URL.revokeObjectURL(link.href);
-}  
+}

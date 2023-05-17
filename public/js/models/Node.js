@@ -55,4 +55,12 @@ export class Node {
     setAttributes(attributes) {
         this.attributes = attributes;
     }
+
+    setContent(content) {
+        if(this.attributes.content) {
+            this.attributes.content = content;
+        } else if(this.attributes.value?.content) {
+            this.attributes.value.content = content;
+        }
+    }
 }

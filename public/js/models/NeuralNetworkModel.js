@@ -120,6 +120,11 @@ export class NeuralNetworkModel {
         const attributes = node.getAttributes();
         return attributes.content || attributes.value?.content || undefined;
     }
+
+    setNodeContentById(nodeId, content) {
+        const node = this.nodes.find(node => node.getId() === nodeId);
+        node.setContent(content);
+    }
     
     getConnectionById(connectionId) {
         return this.connections.find(connection => connection.getId() === connectionId);

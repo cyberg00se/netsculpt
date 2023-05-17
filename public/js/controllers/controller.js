@@ -163,3 +163,11 @@ export function getNodeContentById(responseEvent, nodeId) {
     };
     document.dispatchEvent(new CustomEvent(responseEvent, { detail: eventData }));
 }
+
+export function updateNodeContentById(nodeId, content) {
+    const currentModel = store.getters.getModel;
+    if (!currentModel) {
+        return;
+    }
+    currentModel.setNodeContentById(nodeId, content);
+}
