@@ -57,7 +57,7 @@ function renderNeuralNetworkModelD3(model) {
             nodeElement.addEventListener('click', () => {
                 const nodeId = nodeElement.getAttribute('id');
                 uiUtils.setupModal("node-content-modal", "node-content-close", [], [], [], ["node-content-textarea"]);
-                uiUtils.setupNodeContentTextarea("get-node-content-event", "node-content-textarea", nodeId);
+                uiUtils.setupNodeContentTextarea(`get-${nodeId}-content`, "node-content-textarea", nodeId);
             });
         }
 

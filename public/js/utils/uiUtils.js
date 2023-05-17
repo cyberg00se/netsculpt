@@ -203,6 +203,7 @@ export function hideModal(modalId, selects = [], inputs = [], containers = [], t
     for (const textareaId of textareas) {
         const textareaElement = document.getElementById(textareaId);
         textareaElement.value = "";
+        textareaElement.readOnly = true;
     }
     const modal = document.getElementById(modalId);
     modal.style.display = "none";
@@ -272,14 +273,14 @@ export function setupIdChangeHandler(responseEvent, idSelectId, nameInputId, typ
     });
 }  
 
-export function setupNodeContentTextarea(responseEvent, textareaId, nodeId) {
-    const textareaElement = document.getElementById(textareaId);
-    controller.getNodeContentById(responseEvent, nodeId);
-  
+export function setupNodeContentTextarea(responseEvent, textareaId, nodeId) {  
     document.addEventListener(responseEvent, function(event) {
         const { content } = event.detail;
         textareaElement.value = utils.stringifyArray(content);
     });
+
+    const textareaElement = document.getElementById(textareaId);
+    controller.getNodeContentById(responseEvent, nodeId);
 }
 
 export function downloadBlob(blob, fileName) {
