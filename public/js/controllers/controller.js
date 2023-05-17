@@ -149,3 +149,16 @@ export function handleIdChange(responseEvent, nodeId) {
     };
     document.dispatchEvent(new CustomEvent(responseEvent, { detail: eventData }));
 }
+
+export function getNodeContentById(responseEvent, nodeId) {
+    const currentModel = store.getters.getModel;
+    if (!currentModel) {
+        return;
+    }
+    const content = currentModel.getNodeContentById(nodeId);
+
+    const eventData = {
+        content
+    };
+    document.dispatchEvent(new CustomEvent(responseEvent, { detail: eventData }));
+}

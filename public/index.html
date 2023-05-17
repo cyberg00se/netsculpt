@@ -122,6 +122,16 @@
           </form>
         </div>
       </section>
+
+      <section id="node-content-modal" class="modal">
+        <div class="modal-content">
+          <span id="node-content-close" class="close">&times;</span>
+          <h2>Node Content</h2>
+          <form>
+            <textarea id="node-content-textarea" readonly></textarea>
+          </form>
+        </div>
+      </section>
     </main>
     
     <footer>
@@ -143,6 +153,7 @@
     <script type="module" src="js/views/addNodeView.js"></script>
     <script type="module" src="js/views/editNodeView.js"></script>
     <script type="module" src="js/views/deleteNodeView.js"></script>
+    <script type="module" src="js/render.js"></script>
     <script type="module" src="js/utils/uiUtils.js"></script>
   </body>
 </html>

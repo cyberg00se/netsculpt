@@ -177,7 +177,7 @@ export function gatherInputs(container) {
     return inputs;
 }
 
-export function showModal(modalId, selectsMap) {
+export function showModal(modalId, selectsMap = []) {
     for (const [selectId, possibleValues] of selectsMap) {
         const selectElement = document.getElementById(selectId);
         appendOptions(possibleValues, selectElement);
@@ -187,7 +187,7 @@ export function showModal(modalId, selectsMap) {
     modal.style.display = "block";
 }
   
-export function hideModal(modalId, selects = [], inputs = [], containers = []) {
+export function hideModal(modalId, selects = [], inputs = [], containers = [], textareas = []) {
     for (const selectId of selects) {
         const selectElement = document.getElementById(selectId);
         removeOptions(selectElement);
@@ -200,17 +200,21 @@ export function hideModal(modalId, selects = [], inputs = [], containers = []) {
         const containerElement = document.getElementById(containerId);
         containerElement.innerHTML = "";
     }
+    for (const textareaId of textareas) {
+        const textareaElement = document.getElementById(textareaId);
+        textareaElement.value = "";
+    }
     const modal = document.getElementById(modalId);
     modal.style.display = "none";
 }
 
-export function setupModal(modalId, closeId, selectMap = [], inputs = [], containers = []) {
+export function setupModal(modalId, closeId, selectMap = [], inputs = [], containers = [], textareas = []) {
     const close = document.getElementById(closeId);
   
     showModal(modalId, selectMap);
   
     close.addEventListener("click", function() {
-        hideModal(modalId, Array.from(selectMap.keys()), inputs, containers);
+        hideModal(modalId, Array.from(selectMap.keys()), inputs, containers, textareas);
     });
 }
 
@@ -267,6 +271,16 @@ export function setupIdChangeHandler(responseEvent, idSelectId, nameInputId, typ
         setSelectValues(outputSelect, nodeOutputs);    
     });
 }  
+
+export function setupNodeContentTextarea(responseEvent, textareaId, nodeId) {
+    const textareaElement = document.getElementById(textareaId);
+    controller.getNodeContentById(responseEvent, nodeId);
+  
+    document.addEventListener(responseEvent, function(event) {
+        const { content } = event.detail;
+        textareaElement.value = utils.stringifyArray(content);
+    });
+}
 
 export function downloadBlob(blob, fileName) {
     const link = document.createElement('a');
