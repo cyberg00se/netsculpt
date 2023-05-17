@@ -124,7 +124,8 @@ export function handleTypeChange(responseEvent, nodeType, nodeId = undefined) {
         needsProto,
         protoAttributes,
         realAttributes,
-        attributesNames
+        attributesNames,
+        nodeId
     };
     document.dispatchEvent(new CustomEvent(responseEvent, { detail: eventData }));
 }

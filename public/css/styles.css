@@ -178,10 +178,12 @@ footer {
     color: #fff;
 }
 
-.modal-button:disabled {
+.modal-button:disabled,
+#add-node-modal .open-big-content {
     background-color: #ccc;
     color: #999;
     cursor: not-allowed;
+    pointer-events: none;
 }
 
 .modal-content > h2 {

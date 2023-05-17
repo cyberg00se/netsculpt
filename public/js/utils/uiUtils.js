@@ -64,7 +64,7 @@ export function setSelectValues(element, values) {
     }
 }
 
-export function createInputForAttribute(attrName, attrValue, protoValue = undefined) {
+export function createInputForAttribute(attrName, attrValue, protoValue = undefined, nodeId = undefined) {
     const container = document.createElement("div");
 
     const label = document.createElement("label");
@@ -82,6 +82,7 @@ export function createInputForAttribute(attrName, attrValue, protoValue = undefi
     } else if (attrName === "content") {
         const button = document.createElement("button");
         button.textContent = "Edit Content";
+        button.classList.add('open-big-content');
         button.addEventListener("click", function(event) {
             event.preventDefault();
             createBigContentModal(
@@ -89,7 +90,8 @@ export function createInputForAttribute(attrName, attrValue, protoValue = undefi
                 "node-content-close", 
                 "node-content-textarea", 
                 "save-node-content",
-                utils.stringifyArray(attrValue)
+                utils.stringifyArray(attrValue),
+                nodeId
             );
         });
         container.appendChild(button);
@@ -100,7 +102,7 @@ export function createInputForAttribute(attrName, attrValue, protoValue = undefi
     } else if (typeof attrValue === "string") {
         container.appendChild(createTextInputForAttribute(attrName, attrValue));
     } else if (typeof attrValue === "object" && attrValue !== null) {
-        container.appendChild(createInputsForObjectAttribute(attrValue, protoValue));
+        container.appendChild(createInputsForObjectAttribute(attrValue, protoValue, nodeId));
     } else if (typeof attrValue === "number") {
         container.appendChild(createNumberInputForAttribute(attrValue));
     } else {
@@ -110,12 +112,15 @@ export function createInputForAttribute(attrName, attrValue, protoValue = undefi
     return container;
 }
 
-export function createBigContentModal(modalId, closeId, textareaId, buttonId, value) {
+export function createBigContentModal(modalId, closeId, textareaId, buttonId, value, nodeId) {
     setupModal(modalId, closeId, [], [], [], [textareaId], [buttonId]);
 
     const contentTextarea = document.getElementById(textareaId);
     contentTextarea.value = value;
     contentTextarea.readOnly = false;
+
+    const labelElement = document.querySelector(`label[for="${textareaId}"]`);
+    labelElement.textContent = nodeId;
 
     const button = document.getElementById(buttonId);
     button.disabled = false;
@@ -153,12 +158,12 @@ export function createNumberInputForAttribute(attrValue) {
     return input;
 }
 
-export function createInputsForObjectAttribute(attrValue, protoValue) {
+export function createInputsForObjectAttribute(attrValue, protoValue, nodeId) {
     const container = document.createElement("div");
     for (const subAttr in attrValue) {
         const subAttrValue = attrValue[subAttr];
         const subAtrrProto = protoValue ? protoValue[subAttr] : undefined
-        const subAttrInput = createInputForAttribute(subAttr, subAttrValue, subAtrrProto);
+        const subAttrInput = createInputForAttribute(subAttr, subAttrValue, subAtrrProto, nodeId);
         container.appendChild(subAttrInput);
     }
     return container;
@@ -228,6 +233,9 @@ export function hideModal(modalId, selects = [], inputs = [], containers = [], t
         const textareaElement = document.getElementById(textareaId);
         textareaElement.value = "";
         textareaElement.readOnly = true;
+
+        const labelElement = document.querySelector(`label[for="${textareaId}"]`);
+        labelElement.textContent = "";
     }
     for (const buttonId of buttons) {
         const button = document.getElementById(buttonId);
@@ -260,7 +268,7 @@ export function setupTypeChangeHandler(responseEvent, typeSelectId, attributesCo
     });
 
     document.addEventListener(responseEvent, function(event) {
-        const { needsProto, protoAttributes, realAttributes, attributesNames } = event.detail;
+        const { needsProto, protoAttributes, realAttributes, attributesNames, nodeId } = event.detail;
         attributesContainer.innerHTML = "";
 
         for (const attrName of attributesNames) {
@@ -268,9 +276,9 @@ export function setupTypeChangeHandler(responseEvent, typeSelectId, attributesCo
             let attrInput;
             if (needsProto) {
                 const protoValue = protoAttributes[attrName];
-                attrInput = createInputForAttribute(attrName, attrValue, protoValue);
+                attrInput = createInputForAttribute(attrName, attrValue, protoValue, nodeId);
             } else {
-                attrInput = createInputForAttribute(attrName, attrValue);
+                attrInput = createInputForAttribute(attrName, attrValue, undefined, nodeId);
             }
             attributesContainer.appendChild(attrInput);
             attributesContainer.appendChild(document.createElement("hr"));
@@ -309,6 +317,9 @@ export function setupNodeContentTextarea(responseEvent, textareaId, nodeId) {
 
     const textareaElement = document.getElementById(textareaId);
     controller.getNodeContentById(responseEvent, nodeId);
+
+    const labelElement = document.querySelector(`label[for="${textareaId}"]`);
+    labelElement.textContent = nodeId;
 }
 
 export function downloadBlob(blob, fileName) {
