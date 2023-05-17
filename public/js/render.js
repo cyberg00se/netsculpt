@@ -14,12 +14,13 @@ function renderNeuralNetworkModelD3(model) {
 
         for(const nodeModel of model.nodes) { 
             const label = `${nodeModel.getId()}\n${nodeModel.getType()}\n${JSON.stringify(nodeModel.getAttributes())}`;
+            const nodeClass = `node-${nodeModel.getType()}`;
             graph.setNode(nodeModel.getId(), { 
                 label,  
                 rx: 5,
                 ry: 5,
                 padding: 10,
-                class: 'node'
+                class: `node ${nodeClass}`
             });
         };
         for(const linkModel of model.connections) { 

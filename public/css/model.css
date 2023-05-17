@@ -24,3 +24,67 @@
     stroke-width: 2px;
     fill: none;
 }
+
+/* Styles for ONNX node types */
+.node-Input rect,
+.node-Input ellipse {
+    fill: lightblue;
+    stroke: royalblue;
+}
+
+.node-Output rect,
+.node-Output ellipse {
+    fill: lightgreen;
+    stroke: forestgreen;
+}
+
+.node-Conv rect,
+.node-Conv ellipse,
+.node-MaxPool rect,
+.node-MaxPool ellipse,
+.node-Concat rect,
+.node-Concat ellipse,
+.node-Dropout rect,
+.node-Dropout ellipse,
+.node-GlobalAveragePool rect,
+.node-GlobalAveragePool ellipse {
+    fill: gold;
+    stroke: goldenrod;
+}
+
+.node-Relu rect,
+.node-Relu ellipse,
+.node-Softmax rect,
+.node-Softmax ellipse {
+    fill: coral;
+    stroke: darkorange;
+}
+
+/* Styles for TensorFlow node types */
+.node-Placeholder rect,
+.node-Placeholder ellipse {
+    fill: lightblue;
+    stroke: royalblue;
+}
+
+.node-Identity rect,
+.node-Identity ellipse {
+    fill: deepskyblue;
+    stroke: skyblue;
+}
+
+.node-Const rect,
+.node-Const ellipse {
+    fill: lightgreen;
+    stroke: forestgreen;
+}
+
+.node-BiasAdd rect,
+.node-BiasAdd ellipse,
+.node-MatMul rect,
+.node-MatMul ellipse,
+.node-Elu rect,
+.node-Elu ellipse {
+    fill: gold;
+    stroke: goldenrod;
+}
