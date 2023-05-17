@@ -79,8 +79,21 @@ export function createInputForAttribute(attrName, attrValue, protoValue = undefi
         else {
             container.appendChild(createSelectForArrayAttribute(attrValue));
         }
-    }
-    else if (Array.isArray(attrValue)) {
+    } else if (attrName === "content") {
+        const button = document.createElement("button");
+        button.textContent = "Edit Content";
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            createBigContentModal(
+                "node-content-modal", 
+                "node-content-close", 
+                "node-content-textarea", 
+                "save-node-content",
+                utils.stringifyArray(attrValue)
+            );
+        });
+        container.appendChild(button);
+    } else if (Array.isArray(attrValue)) {
         container.appendChild(createTextInputForAttribute(attrName, utils.stringifyArray(attrValue)));
     } else if (typeof attrValue === "boolean") {
         container.appendChild(createCheckboxForAttribute(attrValue));
@@ -95,6 +108,17 @@ export function createInputForAttribute(attrName, attrValue, protoValue = undefi
     }
 
     return container;
+}
+
+export function createBigContentModal(modalId, closeId, textareaId, buttonId, value) {
+    setupModal(modalId, closeId, [], [], [], [textareaId], [buttonId]);
+
+    const contentTextarea = document.getElementById(textareaId);
+    contentTextarea.value = value;
+    contentTextarea.readOnly = false;
+
+    const button = document.getElementById(buttonId);
+    button.disabled = false;
 }
 
 export function createSelectForArrayAttribute(attrValue) {
@@ -187,7 +211,7 @@ export function showModal(modalId, selectsMap = []) {
     modal.style.display = "block";
 }
   
-export function hideModal(modalId, selects = [], inputs = [], containers = [], textareas = []) {
+export function hideModal(modalId, selects = [], inputs = [], containers = [], textareas = [], buttons = []) {
     for (const selectId of selects) {
         const selectElement = document.getElementById(selectId);
         removeOptions(selectElement);
@@ -205,17 +229,21 @@ export function hideModal(modalId, selects = [], inputs = [], containers = [], t
         textareaElement.value = "";
         textareaElement.readOnly = true;
     }
+    for (const buttonId of buttons) {
+        const button = document.getElementById(buttonId);
+        button.disabled = true;
+    }
     const modal = document.getElementById(modalId);
     modal.style.display = "none";
 }
 
-export function setupModal(modalId, closeId, selectMap = [], inputs = [], containers = [], textareas = []) {
+export function setupModal(modalId, closeId, selectMap = [], inputs = [], containers = [], textareas = [], buttons = []) {
     const close = document.getElementById(closeId);
   
     showModal(modalId, selectMap);
   
     close.addEventListener("click", function() {
-        hideModal(modalId, Array.from(selectMap.keys()), inputs, containers, textareas);
+        hideModal(modalId, Array.from(selectMap.keys()), inputs, containers, textareas, buttons);
     });
 }
 

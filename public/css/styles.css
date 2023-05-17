@@ -178,6 +178,12 @@ footer {
     color: #fff;
 }
 
+.modal-button:disabled {
+    background-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+}
+
 .modal-content > h2 {
     margin-bottom: 10px;
 }

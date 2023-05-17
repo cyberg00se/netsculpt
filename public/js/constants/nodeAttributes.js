@@ -4,7 +4,7 @@ export const onnxNodeAttributes = {
     Input: {
         elemType: Object.keys(onnxDataTypes),
         shape: [],
-        content: ""       
+        content: []       
     },
     Output: {
         elemType: Object.keys(onnxDataTypes),
@@ -46,7 +46,7 @@ export const tensorflowNodeAttributes = {
     Const: {
         dtype: Object.keys(tensorflowDataTypes),
         value: {
-            content: "",
+            content: [],
             shape: [],
             dtype: Object.keys(tensorflowDataTypes)
         }
