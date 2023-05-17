@@ -4,8 +4,7 @@ import * as tensorflowSerializer from './tensorflowSerializer.js';
 
 async function serializeModel(model) {
     if (model.type === ModelType.ONNX) {
-        //return await onnxSerializer.serializeONNXModel(model);
-        return;
+        return await onnxSerializer.serializeONNXModel(model);
     } else if (model.type === ModelType.TENSORFLOW) {
         return await tensorflowSerializer.serializeTensorFlowModel(model);
     } else {

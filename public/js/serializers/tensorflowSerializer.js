@@ -1,4 +1,4 @@
-import { loadProtoDefinition, stringifyArray } from '../utils/utils.js';
+import { loadProtoDefinition } from '../utils/utils.js';
 
 async function serializeTensorFlowModel(model) {
     return new Promise(async (resolve, reject) => {
@@ -12,7 +12,7 @@ async function serializeTensorFlowModel(model) {
             const rootAttr = protobuf.Root.fromJSON(attrValueProto);
             const AttrValue = rootAttr.lookupType("tensorflow.AttrValue");
 
-            const rawModel = model.getRaw();
+            const rawModel = JSON.parse(JSON.stringify(model.getRaw()));
 
             const updatedGraph = {
                 ...rawModel,
