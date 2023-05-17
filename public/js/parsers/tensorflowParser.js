@@ -1,7 +1,9 @@
 import { Node } from "../models/Node.js";
 import { Connection } from "../models/Connection.js"; 
-import { NeuralNetworkModel, ModelType } from "../models/NeuralNetworkModel.js";
+import { NeuralNetworkModel } from "../models/NeuralNetworkModel.js";
 import { loadProtoDefinition, getFirstNonEmptyProperty } from '../utils/utils.js';
+import { ModelType } from "../constants/ModelType.js";
+import { tensorflowDataTypesReverse } from "../constants/dataTypes.js";
 
 async function parseTensorFlowModelFromFile(file) {
     return new Promise((resolve, reject) => {
@@ -75,12 +77,12 @@ function parseTensorflowAttributeValue(key, value) {
     case 's':
       return decoder.decode(value);
     case 'type':
-      return TensorflowDataType[value];
+      return tensorflowDataTypesReverse[value];
     case 'shape':
       return value.dim.map(dim => dim.size);
     case 'tensor':
       return {
-        dtype: TensorflowDataType[value.dtype],
+        dtype: tensorflowDataTypesReverse[value.dtype],
         shape: value.tensorShape.dim.map(dim => dim.size),
         //tensorContent is HUGE
         content: value.tensorContent.length > 0 ? '...' : []
@@ -98,32 +100,4 @@ function parseTensorflowAttributeValue(key, value) {
   }
 }
 
-const TensorflowDataType = {
-  1: 'DT_FLOAT',
-  2: 'DT_DOUBLE',
-  3: 'DT_INT32',
-  4: 'DT_UINT8',
-  5: 'DT_INT16',
-  6: 'DT_INT8',
-  7: 'DT_STRING',
-  8: 'DT_COMPLEX64',
-  9: 'DT_INT64',
-  10: 'DT_BOOL',
-  11: 'DT_QINT8',
-  12: 'DT_QUINT8',
-  13: 'DT_QINT32',
-  14: 'DT_BFLOAT16',
-  15: 'DT_QINT16',
-  16: 'DT_QUINT16',
-  17: 'DT_UINT16',
-  18: 'DT_COMPLEX128',
-  19: 'DT_HALF',
-  20: 'DT_RESOURCE',
-  21: 'DT_VARIANT',
-  22: 'DT_UINT32',
-  23: 'DT_UINT64',
-  24: 'DT_FLOAT8_E5M2',
-  25: 'DT_FLOAT8_E4M3FN'
-};
-
-export { parseTensorFlowModelFromFile, TensorflowDataType };
+export { parseTensorFlowModelFromFile };

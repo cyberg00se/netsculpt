@@ -1,4 +1,4 @@
-import { ModelType } from '../models/NeuralNetworkModel.js';
+import { ModelType } from '../constants/ModelType.js';
 import * as onnxSerializer from './onnxSerializer.js';
 import * as tensorflowSerializer from './tensorflowSerializer.js';
 

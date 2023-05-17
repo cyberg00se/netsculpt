@@ -1,4 +1,5 @@
 import { loadProtoDefinition } from '../utils/utils.js';
+import { onnxDataTypes } from "../constants/dataTypes.js";
 
 async function serializeONNXModel(model) {
     return new Promise(async (resolve, reject) => {
@@ -77,7 +78,7 @@ async function serializeONNXModel(model) {
                 rawValueInfo.name = node.name;
 
                 const tensorProto = TensorProto.create();
-                tensorProto.elemType = OnnxDataType[node.attributes.elemType];
+                tensorProto.elemType = onnxDataTypes[node.attributes.elemType];
                 tensorProto.shape = TensorShapeProto.create();
                 tensorProto.shape.dim = node.attributes.shape.map(value => { return { dimValue: value} });
 
@@ -88,7 +89,7 @@ async function serializeONNXModel(model) {
                     const initTensor = TensorProto.create();
                     initTensor.dims = node.attributes.shape;
                     initTensor.name = node.name;
-                    initTensor.dataType = OnnxDataType[node.attributes.elemType];
+                    initTensor.dataType = onnxDataTypes[node.attributes.elemType];
                     initTensor.rawData = initData;
                 
                     rawGraph.initializer.push(initTensor);
@@ -118,25 +119,5 @@ async function serializeONNXModel(model) {
         }
     });
 }
-
-const OnnxDataType = {
-    'undefined': 0,
-    'float': 1,
-    'uint8': 2,
-    'int8': 3,
-    'uint16': 4,
-    'int16': 5,
-    'int32': 6,
-    'int64': 7,
-    'string': 8,
-    'bool': 9,
-    'float16': 10,
-    'double': 11,
-    'uint32': 12,
-    'uint64': 13,
-    'complex64': 14,
-    'complex128': 15,
-    'bfloat16': 16
-};
 
 export { serializeONNXModel };

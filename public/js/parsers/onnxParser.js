@@ -1,7 +1,9 @@
 import { Node } from "../models/Node.js";
 import { Connection } from "../models/Connection.js"; 
-import { NeuralNetworkModel, ModelType } from "../models/NeuralNetworkModel.js";
+import { NeuralNetworkModel } from "../models/NeuralNetworkModel.js";
 import { loadProtoDefinition, getFirstNonEmptyProperty } from '../utils/utils.js';
+import { ModelType } from "../constants/ModelType.js";
+import { onnxDataTypesReverse } from "../constants/dataTypes.js";
 
 async function parseONNXModelFromFile(file) {
     return new Promise((resolve, reject) => {
@@ -42,7 +44,7 @@ async function parseONNXModelFromFile(file) {
                     //content is a HUGE tensor usually
                     const content = rawModel.graph.initializer.find(elem => elem.name === node.name)?.rawData;
                     const attributes = {
-                        elemType: OnnxDataType[node.type.tensorType.elemType],
+                        elemType: onnxDataTypesReverse[node.type.tensorType.elemType],
                         shape: node.type.tensorType.shape.dim.map(dim => dim.dimValue),
                         content: content ? "..." : undefined
                         //content
@@ -58,7 +60,7 @@ async function parseONNXModelFromFile(file) {
                     const outputs = [];
 
                     const attributes = {
-                        elemType: OnnxDataType[node.type.tensorType.elemType],
+                        elemType: onnxDataTypesReverse[node.type.tensorType.elemType],
                         shape: node.type.tensorType.shape.dim.map(dim => dim.dimValue)
                     };
 
@@ -102,25 +104,5 @@ async function parseONNXModelFromFile(file) {
         reader.readAsArrayBuffer(file);
     });
 }
-
-const OnnxDataType = {
-    0: 'undefined',
-    1: 'float',
-    2: 'uint8',
-    3: 'int8',
-    4: 'uint16',
-    5: 'int16',
-    6: 'int32',
-    7: 'int64',
-    8: 'string',
-    9: 'bool',
-    10: 'float16',
-    11: 'double',
-    12: 'uint32',
-    13: 'uint64',
-    14: 'complex64',
-    15: 'complex128',
-    16: 'bfloat16'
-};
   
-export { parseONNXModelFromFile, OnnxDataType };
+export { parseONNXModelFromFile };
