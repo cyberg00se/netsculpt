@@ -1,5 +1,6 @@
 import { loadProtoDefinition } from '../utils/utils.js';
 import { onnxDataTypes } from "../constants/dataTypes.js";
+import { flattenData } from "../utils/utils.js";
 
 async function serializeONNXModel(model) {
     return new Promise(async (resolve, reject) => {
@@ -89,7 +90,7 @@ async function serializeONNXModel(model) {
                 tensorProto.shape.dim = node.attributes.shape.map(value => { return { dimValue: value} });
 
                 if (node.attributes.content) {
-                    const initData = node.attributes.content;
+                    const initData = new Uint8Array(new Float32Array(flattenData(node.attributes.content)).buffer);
                 
                     const initTensor = TensorProto.create();
                     initTensor.dims = node.attributes.shape;

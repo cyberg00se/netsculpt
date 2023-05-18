@@ -1,5 +1,6 @@
 import { loadProtoDefinition } from '../utils/utils.js';
 import { tensorflowDataTypes } from "../constants/dataTypes.js";
+import { flattenData } from "../utils/utils.js";
 
 async function serializeTensorFlowModel(model) {
     return new Promise(async (resolve, reject) => {
@@ -76,7 +77,7 @@ function serializeTensorflowAttributeValue(key, value, AttrValue) {
                 const tensorValue = {
                     dtype: tensorflowDataTypes[value.dtype],
                     tensorShape: { dim: value.shape.map((dim) => ({ size: dim })) },
-                    tensorContent: value.content ? value.content : [],
+                    tensorContent: value.content ? new Uint8Array(new Float32Array(flattenData(value.content)).buffer) : [],
                 };
                 attribute = { tensor: tensorValue };
             } else if (key === "_class") {

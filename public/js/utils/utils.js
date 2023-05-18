@@ -71,4 +71,22 @@ function reshapeData(data, shape) {
     return reshapedData;
 }
 
-export { loadProtoDefinition, getFirstNonEmptyProperty, parseArrayString, stringifyArray, reshapeData };
+function flattenData(data) {
+    const flattened = [];
+    
+    function flatten(arr, result) {
+        for (let i = 0; i < arr.length; i++) {
+            if (Array.isArray(arr[i])) {
+                flatten(arr[i], result);
+            } else {
+                result.push(arr[i]);
+            }
+        }
+    }
+
+    flatten(data, flattened);
+
+    return flattened;
+}
+
+export { loadProtoDefinition, getFirstNonEmptyProperty, parseArrayString, stringifyArray, reshapeData, flattenData };
