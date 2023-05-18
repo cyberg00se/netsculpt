@@ -4,6 +4,7 @@ import { NeuralNetworkModel } from "../models/NeuralNetworkModel.js";
 import { loadProtoDefinition, getFirstNonEmptyProperty } from '../utils/utils.js';
 import { ModelType } from "../constants/ModelType.js";
 import { onnxDataTypesReverse } from "../constants/dataTypes.js";
+import { reshapeData } from "../utils/utils.js";
 
 async function parseONNXModelFromFile(file) {
     return new Promise((resolve, reject) => {
@@ -41,11 +42,25 @@ async function parseONNXModelFromFile(file) {
                     const inputs = [];
                     const outputs = mainNodes.filter(mainNode => mainNode.inputs.includes(node.name)).map(mainNode => mainNode.id);
 
-                    const content = rawModel.graph.initializer.find(elem => elem.name === node.name)?.rawData;
+                    const tensorData = rawModel.graph.initializer.find(elem => elem.name === node.name)?.rawData;
+                    const buffer = tensorData ? new Uint8Array(tensorData) : new Uint8Array();
+                    const elemType = onnxDataTypesReverse[node.type.tensorType.elemType];
+                    const shape = node.type.tensorType.shape.dim.map(dim => dim.dimValue);
+                    let data;
+                    switch (elemType) {
+                        case 'float':
+                            data = new Float32Array(buffer.buffer);
+                            break;
+                        case 'int32':
+                            data = new Int32Array(buffer.buffer);
+                            break;
+                    }
+                    const reshapedData = reshapeData(data, shape);
+                    console.log(reshapedData);
                     const attributes = {
-                        elemType: onnxDataTypesReverse[node.type.tensorType.elemType],
-                        shape: node.type.tensorType.shape.dim.map(dim => dim.dimValue),
-                        //content
+                        elemType,
+                        shape,
+                        //content: reshapedData
                         content: []
                     };
 

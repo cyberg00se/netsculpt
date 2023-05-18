@@ -42,4 +42,33 @@ function stringifyArray(arr) {
     return arr;
 }
 
-export { loadProtoDefinition, getFirstNonEmptyProperty, parseArrayString, stringifyArray };
+function reshapeData(data, shape) {
+    const totalSize = shape.reduce((acc, dim) => acc * dim, 1);
+    if(data.length === 0) {
+        return [];
+    }
+    if (data.length !== totalSize) {
+        throw new Error('Data size does not match the specified shape.');
+    }
+
+    const reshapedData = [];
+    let dataIndex = 0;
+
+    function traverseShape(arr, shapeIdx) {
+        if (shapeIdx === shape.length) {
+            arr.push(data[dataIndex]);
+            dataIndex++;
+        } else {
+        const subArr = [];
+        for (let i = 0; i < shape[shapeIdx]; i++) {
+            traverseShape(subArr, shapeIdx + 1);
+        }
+        arr.push(subArr);
+        }
+    }
+
+    traverseShape(reshapedData, 0);
+    return reshapedData;
+}
+
+export { loadProtoDefinition, getFirstNonEmptyProperty, parseArrayString, stringifyArray, reshapeData };

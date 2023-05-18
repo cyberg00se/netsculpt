@@ -4,6 +4,7 @@ import { NeuralNetworkModel } from "../models/NeuralNetworkModel.js";
 import { loadProtoDefinition, getFirstNonEmptyProperty } from '../utils/utils.js';
 import { ModelType } from "../constants/ModelType.js";
 import { tensorflowDataTypesReverse } from "../constants/dataTypes.js";
+import { reshapeData } from "../utils/utils.js";
 
 async function parseTensorFlowModelFromFile(file) {
     return new Promise((resolve, reject) => {
@@ -81,10 +82,24 @@ function parseTensorflowAttributeValue(key, value) {
     case 'shape':
       return value.dim.map(dim => dim.size);
     case 'tensor':
+      const buffer = new Uint8Array(value.tensorContent);
+      const type = tensorflowDataTypesReverse[value.dtype];
+      const shape = value.tensorShape.dim.map(dim => dim.size);
+      let data;
+      switch (type) {
+        case 'DT_FLOAT':
+          data = new Float32Array(buffer.buffer);
+          break;
+        case 'DT_INT32':
+          data = new Int32Array(buffer.buffer);
+          break;
+      }
+      const reshapedData = reshapeData(data, shape);
+      console.log(reshapedData);
       return {
-        dtype: tensorflowDataTypesReverse[value.dtype],
-        shape: value.tensorShape.dim.map(dim => dim.size),
-        //content: value.tensorContent
+        dtype: type,
+        shape: shape,
+        //content: reshapedData
         content: []
       }
     case 'list':
