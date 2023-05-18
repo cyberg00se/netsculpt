@@ -244,3 +244,10 @@ form > select, form > input {
     resize: vertical;
     overflow: auto;
 }
+
+.invalid-input,
+.invalid-input:focus,
+.invalid-input:active,
+.invalid-input:hover {
+    border: 2px solid red;
+}

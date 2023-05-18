@@ -118,6 +118,7 @@ export function createBigContentModal(modalId, closeId, textareaId, buttonId, va
     const contentTextarea = document.getElementById(textareaId);
     contentTextarea.value = utils.stringifyArray(value);
     contentTextarea.readOnly = false;
+    validateArray(contentTextarea);
 
     const labelElement = document.querySelector(`label[for="${textareaId}"]`);
     labelElement.textContent = nodeId;
@@ -155,6 +156,7 @@ export function createTextInputForAttribute(attrName, attrValue) {
     input.type = "text";
     input.placeholder = attrName;
     input.value = attrValue;
+    validateArray(input);
     return input;
 }
 
@@ -340,4 +342,17 @@ export function downloadBlob(blob, fileName) {
     link.click();
 
     URL.revokeObjectURL(link.href);
+}
+
+export function validateArray(element) {
+    element.addEventListener('change', function() {
+        const pattern = /^\[.*\]$/;
+        const inputValue = element.value.trim();
+      
+        if (!pattern.test(inputValue)) {
+            element.classList.add('invalid-input');
+        } else {
+            element.classList.remove('invalid-input');
+        }
+    });  
 }
