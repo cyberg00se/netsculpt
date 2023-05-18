@@ -89,8 +89,7 @@ async function serializeONNXModel(model) {
                 tensorProto.shape.dim = node.attributes.shape.map(value => { return { dimValue: value} });
 
                 if (node.attributes.content) {
-                    //const initData = node.attributes.content;
-                    const initData = [];
+                    const initData = node.attributes.content;
                 
                     const initTensor = TensorProto.create();
                     initTensor.dims = node.attributes.shape;

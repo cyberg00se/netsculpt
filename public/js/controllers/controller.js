@@ -162,6 +162,7 @@ export function getNodeContentById(responseEvent, nodeId) {
         content
     };
     document.dispatchEvent(new CustomEvent(responseEvent, { detail: eventData }));
+    return content;
 }
 
 export function updateNodeContentById(nodeId, content) {

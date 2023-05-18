@@ -117,8 +117,8 @@ export class NeuralNetworkModel {
 
     getNodeContentById(nodeId) {
         const node = this.nodes.find(node => node.getId() === nodeId);
-        const attributes = node.getAttributes();
-        return attributes.content || attributes.value?.content || undefined;
+        const attributes = node ? node.getAttributes() : undefined;
+        return attributes?.content || attributes?.value?.content || undefined;
     }
 
     setNodeContentById(nodeId, content) {

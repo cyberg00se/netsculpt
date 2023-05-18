@@ -116,7 +116,7 @@ export function createBigContentModal(modalId, closeId, textareaId, buttonId, va
     setupModal(modalId, closeId, [], [], [], [textareaId], [buttonId]);
 
     const contentTextarea = document.getElementById(textareaId);
-    contentTextarea.value = value;
+    contentTextarea.value = utils.stringifyArray(value);
     contentTextarea.readOnly = false;
 
     const labelElement = document.querySelector(`label[for="${textareaId}"]`);
@@ -127,7 +127,7 @@ export function createBigContentModal(modalId, closeId, textareaId, buttonId, va
         const id = labelElement.textContent;
         const content = contentTextarea.value;
     
-        controller.updateNodeContentById(id, content);
+        controller.updateNodeContentById(id, utils.parseArrayString(content));
         document.getElementById(closeId).click();
     });
     button.disabled = false;
@@ -176,14 +176,14 @@ export function createInputsForObjectAttribute(attrValue, protoValue, nodeId) {
     return container;
 }
 
-export function gatherInputs(container) {
+export function gatherInputs(container, nodeId) {
     const collection = container.children;
     let inputs = {};
 
     if (!Array.from(collection).some(el => el.tagName === 'LABEL')) {
         for (let i = 0; i < collection.length; i++) {
             if (collection[i].tagName === 'DIV') {
-                const subInputs = gatherInputs(collection[i], true);
+                const subInputs = gatherInputs(collection[i], nodeId);
                 if (Object.keys(subInputs).length > 0) {
                     Object.assign(inputs, subInputs);
                 }
@@ -204,7 +204,10 @@ export function gatherInputs(container) {
                             inputs[label] = utils.parseArrayString(inputContainer.value);
                         }
                     } else if (inputContainer.tagName === 'DIV') {
-                        inputs[label] = gatherInputs(inputContainer);
+                        inputs[label] = gatherInputs(inputContainer, nodeId);
+                    } else if(inputContainer.tagName === 'BUTTON' && label === 'content') {
+                        const content = controller.getNodeContentById(`resave-${nodeId}-content`, nodeId);
+                        inputs[label] = content ? content : [];
                     }
                 }
             }
@@ -319,7 +322,7 @@ export function setupIdChangeHandler(responseEvent, idSelectId, nameInputId, typ
 export function setupNodeContentTextarea(responseEvent, textareaId, nodeId) {  
     document.addEventListener(responseEvent, function(event) {
         const { content } = event.detail;
-        textareaElement.value = content;
+        textareaElement.value = utils.stringifyArray(content);
     });
 
     const textareaElement = document.getElementById(textareaId);

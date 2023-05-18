@@ -37,7 +37,6 @@ function parseArrayString(str) {
 
 function stringifyArray(arr) {
     try {
-        console.log(arr);
         return JSON.stringify(arr);
     } catch (err) {}
     return arr;

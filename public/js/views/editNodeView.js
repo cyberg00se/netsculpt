@@ -50,7 +50,7 @@ document.getElementById("edit-node").addEventListener("click", function() {
     for (const option of document.getElementById("edit-node-node-output").selectedOptions) {
         outputs.push(option.value);
     }
-    const attributes = uiUtils.gatherInputs(document.getElementById("edit-node-node-attributes"));
+    const attributes = uiUtils.gatherInputs(document.getElementById("edit-node-node-attributes"), nodeId);
 
     controller.handleEditNode({
         nodeId, 

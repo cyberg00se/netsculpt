@@ -76,7 +76,7 @@ function serializeTensorflowAttributeValue(key, value, AttrValue) {
                 const tensorValue = {
                     dtype: tensorflowDataTypes[value.dtype],
                     tensorShape: { dim: value.shape.map((dim) => ({ size: dim })) },
-                    tensorContent: value.content ? [] : [], ////////// fix tensor content
+                    tensorContent: value.content ? value.content : [],
                 };
                 attribute = { tensor: tensorValue };
             } else if (key === "_class") {

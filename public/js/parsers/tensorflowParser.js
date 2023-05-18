@@ -84,8 +84,8 @@ function parseTensorflowAttributeValue(key, value) {
       return {
         dtype: tensorflowDataTypesReverse[value.dtype],
         shape: value.tensorShape.dim.map(dim => dim.size),
-        //tensorContent is HUGE
-        content: value.tensorContent.length > 0 ? '...' : []
+        //content: value.tensorContent
+        content: []
       }
     case 'list':
       const complexObj = {};

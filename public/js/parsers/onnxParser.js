@@ -41,13 +41,12 @@ async function parseONNXModelFromFile(file) {
                     const inputs = [];
                     const outputs = mainNodes.filter(mainNode => mainNode.inputs.includes(node.name)).map(mainNode => mainNode.id);
 
-                    //content is a HUGE tensor usually
                     const content = rawModel.graph.initializer.find(elem => elem.name === node.name)?.rawData;
                     const attributes = {
                         elemType: onnxDataTypesReverse[node.type.tensorType.elemType],
                         shape: node.type.tensorType.shape.dim.map(dim => dim.dimValue),
-                        content: content ? "..." : undefined
                         //content
+                        content: []
                     };
 
                     return new Node(id, type, name, inputs, outputs, attributes);
