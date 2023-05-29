@@ -1,4 +1,4 @@
-import { showMessage } from 'uiUtils.js';
+import { showMessage } from './uiUtils.js';
 
 async function loadProtoDefinition(path) {
     return new Promise((resolve, reject) => {
