@@ -57,12 +57,10 @@ async function parseONNXModelFromFile(file) {
                             break;
                     }
                     const reshapedData = reshapeData(data, shape);
-                    console.log(reshapedData);
                     const attributes = {
                         elemType,
                         shape,
-                        //content: reshapedData
-                        content: []
+                        content: reshapedData
                     };
 
                     return new Node(id, type, name, inputs, outputs, attributes);

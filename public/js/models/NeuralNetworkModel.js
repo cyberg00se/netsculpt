@@ -2,6 +2,8 @@ import { Connection } from "./Connection.js";
 import { ModelType } from "../constants/ModelType.js";
 import { onnxNodeTypes, tensorflowNodeTypes } from "../constants/nodeTypes.js";
 import { onnxNodeAttributes, tensorflowNodeAttributes } from "../constants/nodeAttributes.js";
+import { getArrayShape, recursivelySliceArray } from "../utils/utils.js";
+import { showMessage } from "../utils/uiUtils.js";
 
 export class NeuralNetworkModel {
     constructor(nodes, connections, type, raw, fileName) {
@@ -118,7 +120,21 @@ export class NeuralNetworkModel {
     getNodeContentById(nodeId) {
         const node = this.nodes.find(node => node.getId() === nodeId);
         const attributes = node ? node.getAttributes() : undefined;
-        return attributes?.content || attributes?.value?.content || undefined;
+        const content = attributes?.content || attributes?.value?.content || undefined;
+
+        if (content && content.length) {
+            const limit = 100;
+            const shape = getArrayShape(content);
+            const isShapeTooBig = shape.some(axis => axis > limit);
+        
+            if (isShapeTooBig) {
+                showMessage(`Content is too big, showing cropped to ${limit} on all axes!`, 'warning')
+                const preview = recursivelySliceArray(content, limit);
+                return preview;
+            }
+        }
+        
+        return content;
     }
 
     setNodeContentById(nodeId, content) {

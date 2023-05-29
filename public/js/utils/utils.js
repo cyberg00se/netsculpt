@@ -92,4 +92,35 @@ function flattenData(data) {
     return flattened;
 }
 
-export { loadProtoDefinition, getFirstNonEmptyProperty, parseArrayString, stringifyArray, reshapeData, flattenData };
+function getArrayShape(arr) {
+    const shape = [];
+  
+    function traverseArray(currentArr) {
+        if (Array.isArray(currentArr)) {
+            shape.push(currentArr.length);
+            traverseArray(currentArr[0]);
+        }
+    }
+  
+    traverseArray(arr);
+    return shape;
+}
+
+function recursivelySliceArray(arr, num) {
+    if (Array.isArray(arr)) {
+        const slicedArr = arr.slice(0, num);
+        return slicedArr.map((subArr) => recursivelySliceArray(subArr, num));
+    }
+    return arr;
+}
+
+export { 
+    loadProtoDefinition, 
+    getFirstNonEmptyProperty, 
+    parseArrayString, 
+    stringifyArray, 
+    reshapeData, 
+    flattenData, 
+    getArrayShape,
+    recursivelySliceArray
+};

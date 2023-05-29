@@ -96,12 +96,10 @@ function parseTensorflowAttributeValue(key, value) {
           break;
       }
       const reshapedData = reshapeData(data, shape);
-      console.log(reshapedData);
       return {
         dtype: type,
         shape: shape,
-        //content: reshapedData
-        content: []
+        content: reshapedData
       }
     case 'list':
       const complexObj = {};

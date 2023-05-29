@@ -321,12 +321,13 @@ export function setupIdChangeHandler(responseEvent, idSelectId, nameInputId, typ
     });
 }  
 
-export function setupNodeContentTextarea(responseEvent, textareaId, nodeId) {  
+export function setupNodeContentTextarea(responseEvent, textareaId, nodeId) {
     document.addEventListener(responseEvent, function(event) {
         const { content } = event.detail;
         textareaElement.value = utils.stringifyArray(content);
     });
 
+    showMessage('Loading data...', 'info');
     const textareaElement = document.getElementById(textareaId);
     controller.getNodeContentById(responseEvent, nodeId);
 
@@ -367,5 +368,5 @@ export function showMessage(message, messageType) {
     messageContainer.style.opacity = '1';
     setTimeout(function() {
         messageContainer.style.opacity = '0';
-    }, 3000);
+    }, 2000);
 }
