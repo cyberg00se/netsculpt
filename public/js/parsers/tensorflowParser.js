@@ -5,13 +5,14 @@ import { loadProtoDefinition, getFirstNonEmptyProperty } from '../utils/utils.js
 import { ModelType } from "../constants/ModelType.js";
 import { tensorflowDataTypesReverse } from "../constants/dataTypes.js";
 import { reshapeData } from "../utils/utils.js";
+import { showMessage } from "../utils/uiUtils.js";
 
 async function parseTensorFlowModelFromFile(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = async (event) => {
             try {
-                console.log('Parsing TensorFlow model:', file.name);
+                showMessage(`Parsing TensorFlow model: ${file.name}`, 'info');
                 const modelData = new Uint8Array(event.target.result);
 
                 const tfProto = await loadProtoDefinition("js/lib/tensorflow/framework/graph.proto");

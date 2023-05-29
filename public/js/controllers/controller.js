@@ -1,6 +1,7 @@
 import store from '../store.js';
 import * as render from '../render.js';
 import { downloadBlob } from '../utils/uiUtils.js';
+import { showMessage } from '../utils/uiUtils.js';
 
 export function handleFileInputChange(event) {
     try {
@@ -8,10 +9,10 @@ export function handleFileInputChange(event) {
         store.dispatch('loadModelFromFile', file).then(model => {
             render.renderNeuralNetworkModel(model);
         }).catch(error => {
-            console.error(error);
+            showMessage(error, 'error');
         });
     } catch (error) {
-        console.error(error);
+        showMessage(error, 'error');
     }
 }
 
@@ -26,13 +27,14 @@ export async function handleExportButtonClick(event) {
 
         downloadBlob(blob, currentModel.getFileName());
     } catch (error) {
-        console.error(error);
+        showMessage(error, 'error');
     }
 }
 
 export function handleAddNodeButtonClick() {
     const currentModel = store.getters.getModel;
     if (!currentModel) {
+        showMessage('Model is not set', 'error');
         return;
     }
   
@@ -58,6 +60,7 @@ export function handleAddNode(nodeData) {
 export function handleDeleteNodeButtonClick() {
     const currentModel = store.getters.getModel;
     if (!currentModel) {
+        showMessage('Model is not set', 'error');
         return;
     }
   
@@ -79,6 +82,7 @@ export function handleDeleteNode(nodeId) {
 export function handleEditNodeButtonClick() {
     const currentModel = store.getters.getModel;
     if (!currentModel) {
+        showMessage('Model is not set', 'error');
         return;
     }
   
@@ -106,6 +110,7 @@ export function handleEditNode(nodeData) {
 export function handleTypeChange(responseEvent, nodeType, nodeId = undefined) {
     const currentModel = store.getters.getModel;
     if (!currentModel) {
+        showMessage('Model is not set', 'error');
         return;
     }
     const node = nodeId ? currentModel.getNodeById(nodeId) : undefined;
@@ -133,6 +138,7 @@ export function handleTypeChange(responseEvent, nodeType, nodeId = undefined) {
 export function handleIdChange(responseEvent, nodeId) {
     const currentModel = store.getters.getModel;
     if (!currentModel) {
+        showMessage('Model is not set', 'error');
         return;
     }
     const node = currentModel.getNodeById(nodeId);
@@ -154,6 +160,7 @@ export function handleIdChange(responseEvent, nodeId) {
 export function getNodeContentById(responseEvent, nodeId) {
     const currentModel = store.getters.getModel;
     if (!currentModel) {
+        showMessage('Model is not set', 'error');
         return;
     }
     const content = currentModel.getNodeContentById(nodeId);
@@ -168,6 +175,7 @@ export function getNodeContentById(responseEvent, nodeId) {
 export function updateNodeContentById(nodeId, content) {
     const currentModel = store.getters.getModel;
     if (!currentModel) {
+        showMessage('Model is not set', 'error');
         return;
     }
     currentModel.setNodeContentById(nodeId, content);

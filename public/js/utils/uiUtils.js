@@ -356,3 +356,16 @@ export function validateArray(element) {
         }
     });  
 }
+
+export function showMessage(message, messageType) {
+    var messageContainer = document.getElementById('message-container');
+    messageContainer.textContent = message;
+
+    messageContainer.classList.remove(...messageContainer.classList);
+    messageContainer.classList.add(messageType);
+  
+    messageContainer.style.opacity = '1';
+    setTimeout(function() {
+        messageContainer.style.opacity = '0';
+    }, 3000);
+}

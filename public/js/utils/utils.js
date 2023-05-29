@@ -1,3 +1,5 @@
+import { showMessage } from 'uiUtils.js';
+
 async function loadProtoDefinition(path) {
     return new Promise((resolve, reject) => {
         protobuf.load(path, (err, root) => {
@@ -48,6 +50,7 @@ function reshapeData(data, shape) {
         return [];
     }
     if (data.length !== totalSize) {
+        showMessage('Data size does not match the specified shape.', 'error');
         throw new Error('Data size does not match the specified shape.');
     }
 

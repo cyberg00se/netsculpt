@@ -1,11 +1,12 @@
 import { loadProtoDefinition } from '../utils/utils.js';
 import { onnxDataTypes } from "../constants/dataTypes.js";
 import { flattenData } from "../utils/utils.js";
+import { showMessage } from "../utils/uiUtils.js";
 
 async function serializeONNXModel(model) {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log('Serializing ONNX model:');
+            showMessage('Serializing ONNX model:', 'info');
             const onnxProto = await loadProtoDefinition("js/lib/onnx/onnx.proto");
             const root = protobuf.Root.fromJSON(onnxProto);
             

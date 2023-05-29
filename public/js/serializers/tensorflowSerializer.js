@@ -1,11 +1,12 @@
 import { loadProtoDefinition } from '../utils/utils.js';
 import { tensorflowDataTypes } from "../constants/dataTypes.js";
 import { flattenData } from "../utils/utils.js";
+import { showMessage } from "../utils/uiUtils.js";
 
 async function serializeTensorFlowModel(model) {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log('Serializing TensorFlow model:');
+            showMessage('Serializing TensorFlow model:', 'info');
             const tfGraphProto = await loadProtoDefinition("js/lib/tensorflow/framework/graph.proto");
             const rootGraph = protobuf.Root.fromJSON(tfGraphProto);
             const GraphDef = rootGraph.lookupType("tensorflow.GraphDef");

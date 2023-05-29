@@ -251,3 +251,27 @@ form > select, form > input {
 .invalid-input:hover {
     border: 2px solid red;
 }
+
+#message-container {
+    z-index: 1500;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 10px;
+    border-radius: 3px;
+    font-family: 'Helvetica', Arial, sans-serif;
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+  
+.error {
+    background-color: #f44336;
+    color: #ffffff;
+}
+  
+.info {
+    background-color: #2196f3;
+    color: #ffffff;
+}
+  
