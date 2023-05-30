@@ -39,6 +39,7 @@ document.addEventListener("showEditNodeModal", function(event) {
     );  
 });
 document.getElementById("edit-node").addEventListener("click", function() {
+    uiUtils.showMessage('Saving...', 'info');
     const nodeId = document.getElementById("edit-node-node-id").value;
     const nodeName = document.getElementById("edit-node-node-name").value;
     const nodeType = document.getElementById("edit-node-node-type").value;

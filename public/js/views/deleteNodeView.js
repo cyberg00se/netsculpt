@@ -18,6 +18,7 @@ document.addEventListener("showDeleteNodeModal", function(event) {
     );
 });
 document.getElementById("delete-node").addEventListener("click", function() {
+    uiUtils.showMessage('Saving...', 'info');
     const id = document.getElementById("delete-node-node-id").value;
 
     controller.handleDeleteNode(id);

@@ -24,6 +24,7 @@ document.addEventListener("showAddNodeModal", function(event) {
     uiUtils.setupTypeChangeHandler("add-type-change-event", "add-node-node-type", "add-node-node-attributes");  
 });
 document.getElementById("add-node").addEventListener("click", function() {
+    uiUtils.showMessage('Saving...', 'info');
     const nodeName = document.getElementById("add-node-node-name").value;
     const nodeType = document.getElementById("add-node-node-type").value;
     const inputs = [];

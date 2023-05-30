@@ -30,9 +30,15 @@ export class NeuralNetworkModel {
     
     removeNode(nodeId) {
         this.nodes = this.nodes.filter(node => node.id !== nodeId);
-        this.connections = this.connections.filter(connection => 
-            connection.fromNode.getId() !== nodeId && connection.toNode.getId() !== nodeId
-        );
+        for (let i = this.connections.length - 1; i >= 0; i--) {
+            const connection = this.connections[i];
+            const fromNodeId = connection.fromNode.getId();
+            const toNodeId = connection.toNode.getId();
+    
+            if (fromNodeId === nodeId || toNodeId === nodeId) {
+                this.removeConnection(connection.id);
+            }
+        }
     }
 
     updateNode(nodeId, updatedNode) {
@@ -53,11 +59,37 @@ export class NeuralNetworkModel {
         const existingConnection = this.connections.find(c => c.isEqual(connection));
         if (!existingConnection) {
             this.connections.push(connection);
+
+            const fromNodeId = connection.fromNode.getId();
+            const toNodeId = connection.toNode.getId();
+
+            const outputNode = this.getNodeById(fromNodeId);
+            if (!outputNode.outputs.includes(toNodeId)) {
+                outputNode.outputs.push(toNodeId);
+            }
+
+            const inputNode = this.getNodeById(toNodeId);
+            if (!inputNode.inputs.includes(fromNodeId)) {
+                inputNode.inputs.push(fromNodeId);
+            }
         }
     }
     
     removeConnection(connectionId) {
-        this.connections = this.connections.filter(connection => connection.id !== connectionId);
+        const removedConnection = this.connections.find(connection => connection.id === connectionId);
+        if (removedConnection) {
+            console.log(removedConnection);
+            const fromNodeId = removedConnection.fromNode.getId();
+            const toNodeId = removedConnection.toNode.getId();
+
+            const fromNode = removedConnection.fromNode;
+            fromNode.outputs = fromNode.outputs.filter(output => output !== toNodeId);
+
+            const toNode = removedConnection.toNode;
+            toNode.inputs = toNode.inputs.filter(input => input !== fromNodeId);
+
+            this.connections = this.connections.filter(connection => connection.id !== connectionId);
+        }
     }
 
     updateConnectionProperties(connectionId, properties) {

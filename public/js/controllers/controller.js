@@ -6,11 +6,13 @@ import { showMessage } from '../utils/uiUtils.js';
 export function handleFileInputChange(event) {
     try {
         const file = event.target.files[0];
-        store.dispatch('loadModelFromFile', file).then(model => {
-            render.renderNeuralNetworkModel(model);
-        }).catch(error => {
-            showMessage(error, 'error');
-        });
+        if(file) {
+            store.dispatch('loadModelFromFile', file).then(model => {
+                render.renderNeuralNetworkModel(model);
+            }).catch(error => {
+                showMessage(error, 'error');
+            });
+        }
     } catch (error) {
         showMessage(error, 'error');
     }
