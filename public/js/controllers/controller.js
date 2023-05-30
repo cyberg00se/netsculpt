@@ -56,7 +56,9 @@ export function handleAddNode(nodeData) {
     store.commit('addNode', nodeData);
             
     document.getElementById("add-node-close").click();
-    render.renderNeuralNetworkModel(store.getters.getModel);
+    setTimeout(() => {
+        render.renderNeuralNetworkModel(store.getters.getModel);
+    }, 0);
 }
 
 export function handleDeleteNodeButtonClick() {
@@ -78,7 +80,9 @@ export function handleDeleteNode(nodeId) {
     store.commit('deleteNode', nodeId);
             
     document.getElementById("delete-node-close").click();
-    render.renderNeuralNetworkModel(store.getters.getModel);
+    setTimeout(() => {
+        render.renderNeuralNetworkModel(store.getters.getModel);
+    }, 0);
 }
 
 export function handleEditNodeButtonClick() {
@@ -106,7 +110,9 @@ export function handleEditNode(nodeData) {
     store.commit('editNode', nodeData);
             
     document.getElementById("edit-node-close").click();
-    render.renderNeuralNetworkModel(store.getters.getModel);
+    setTimeout(() => {
+        render.renderNeuralNetworkModel(store.getters.getModel);
+    }, 0);
 }
 
 export function handleTypeChange(responseEvent, nodeType, nodeId = undefined) {
