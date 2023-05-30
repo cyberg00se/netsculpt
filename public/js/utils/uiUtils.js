@@ -364,9 +364,10 @@ export function showMessage(message, messageType) {
 
     messageContainer.classList.remove(...messageContainer.classList);
     messageContainer.classList.add(messageType);
-  
+
     messageContainer.style.opacity = '1';
-    setTimeout(function() {
+
+    setTimeout(function () {
         messageContainer.style.opacity = '0';
     }, 2000);
 }

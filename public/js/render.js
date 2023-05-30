@@ -15,12 +15,11 @@ function renderNeuralNetworkModelD3(model) {
         var graph = new dagreD3.graphlib.Graph({compound:true}).setGraph({});
 
         for(const nodeModel of model.nodes) { 
-            const nodeAttributes = JSON.parse(JSON.stringify(nodeModel.getAttributes()));
-            if(nodeAttributes.content) {
-                nodeAttributes.content = "...expand";
-            } else if(nodeAttributes.value?.content) {
-                nodeAttributes.value.content = "...expand";
-            }
+            const originalAttributes = nodeModel.getAttributes();
+            const nodeAttributes = {
+                ...originalAttributes,
+                content: originalAttributes.content ? "...expand" : originalAttributes.value?.content ? "...expand" : undefined
+            };
             
             const label = `${nodeModel.getId()}\n${nodeModel.getType()}\n${JSON.stringify(nodeAttributes)}`;
             const nodeClass = `node-${nodeModel.getType()}`;
