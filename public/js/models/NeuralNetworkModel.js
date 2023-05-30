@@ -42,10 +42,8 @@ export class NeuralNetworkModel {
     }
 
     updateNode(nodeId, updatedNode) {
-        const index = this.nodes.findIndex(node => node.getId() === nodeId);
-        if (index !== -1) {
-            this.nodes.splice(index, 1, updatedNode);
-        }
+        this.removeNode(nodeId);
+        this.addNode(updatedNode);
     }
     
     updateNodeProperties(nodeId, properties) {
