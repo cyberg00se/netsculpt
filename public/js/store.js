@@ -1,6 +1,7 @@
 import * as parser from './parsers/parser.js';
 import * as serializer from './serializers/serializer.js';
 import { Node } from "./models/Node.js";
+import { cleanupObject } from './utils/utils.js';
 
 export default new Vuex.Store({
     state: {
@@ -8,7 +9,10 @@ export default new Vuex.Store({
     },
     mutations: {
       setCurrentModel (state, model) {
-        state.currentModel = model
+        if (state.currentModel) {
+          //cleanupObject(state.currentModel);
+        }
+        state.currentModel = model;
       },
       addNode (state, { nodeId, nodeName, nodeType, inputs, outputs, attributes }) {
         const newNode = new Node(

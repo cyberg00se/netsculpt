@@ -8,7 +8,9 @@ export function handleFileInputChange(event) {
         const file = event.target.files[0];
         if(file) {
             store.dispatch('loadModelFromFile', file).then(model => {
-                render.renderNeuralNetworkModel(model);
+                setTimeout(() => {
+                    render.renderNeuralNetworkModel(model);
+                }, 0);
             }).catch(error => {
                 showMessage(error, 'error');
             });

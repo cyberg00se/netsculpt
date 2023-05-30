@@ -1,7 +1,20 @@
 import * as uiUtils from './utils/uiUtils.js';
 
+const render = new dagreD3.render();
+
+function nodeClickHandler() {
+    const nodeId = this.getAttribute('id');
+    uiUtils.setupModal("node-content-modal", "node-content-close", [], [], [], ["node-content-textarea"]);
+    uiUtils.setupNodeContentTextarea(`get-${nodeId}-content`, "node-content-textarea", nodeId);
+}
+
 function renderNeuralNetworkModelD3(model) {
     console.log(model);
+
+    const oldNodeElements = document.getElementsByClassName('node');
+    for (const nodeElement of oldNodeElements) {
+        nodeElement.removeEventListener('click', nodeClickHandler);
+    }
 
     const canvas = document.getElementById('editor-container');
     while (canvas.lastChild) {
@@ -15,11 +28,12 @@ function renderNeuralNetworkModelD3(model) {
         var graph = new dagreD3.graphlib.Graph({compound:true}).setGraph({});
 
         for(const nodeModel of model.nodes) { 
-            const originalAttributes = nodeModel.getAttributes();
-            const nodeAttributes = {
-                ...originalAttributes,
-                content: originalAttributes.content ? "...expand" : originalAttributes.value?.content ? "...expand" : undefined
-            };
+            const nodeAttributes = JSON.parse(JSON.stringify(nodeModel.getAttributes()));
+            if(nodeAttributes.content) {
+                nodeAttributes.content = "...expand";
+            } else if(nodeAttributes.value?.content) {
+                nodeAttributes.value.content = "...expand";
+            }
             
             const label = `${nodeModel.getId()}\n${nodeModel.getType()}\n${JSON.stringify(nodeAttributes)}`;
             const nodeClass = `node-${nodeModel.getType()}`;
@@ -48,16 +62,11 @@ function renderNeuralNetworkModelD3(model) {
         });;
         svg.call(zoom);
 
-        var render = new dagreD3.render();
         render(inner, graph);
 
         const nodeElements = document.getElementsByClassName('node');
         for (const nodeElement of nodeElements) {
-            nodeElement.addEventListener('click', () => {
-                const nodeId = nodeElement.getAttribute('id');
-                uiUtils.setupModal("node-content-modal", "node-content-close", [], [], [], ["node-content-textarea"]);
-                uiUtils.setupNodeContentTextarea(`get-${nodeId}-content`, "node-content-textarea", nodeId);
-            });
+            nodeElement.addEventListener('click', nodeClickHandler);
         }
 
         return;

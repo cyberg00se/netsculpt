@@ -114,6 +114,23 @@ function recursivelySliceArray(arr, num) {
     return arr;
 }
 
+function cleanupObject(obj) {
+    for (let prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        if (typeof obj[prop] === 'object' && obj[prop] !== null) {
+            if (Array.isArray(obj[prop])) {
+                obj[prop].length = 0;
+            } else if (obj[prop] instanceof Uint8Array) {
+                obj[prop] = new Uint8Array();
+            } else {
+                cleanupObject(obj[prop]);
+            }
+        }
+        delete obj[prop];
+      }
+    }
+}
+
 export { 
     loadProtoDefinition, 
     getFirstNonEmptyProperty, 
@@ -122,5 +139,6 @@ export {
     reshapeData, 
     flattenData, 
     getArrayShape,
-    recursivelySliceArray
+    recursivelySliceArray, 
+    cleanupObject
 };
